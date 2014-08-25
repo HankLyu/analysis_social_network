@@ -127,6 +127,7 @@ int main(int argc,char* argv[]){
 		while(!infl.empty() || !is_init_put(initnode)){
 			//for each round to put the act node once, and check the node
 			//has been influenced. if yes record this, no put it into queue
+			//////////////////////////////////////////////////////////////////////////////////
 			if(put_time[putt]==tmp_round && putt<initnum && put_activenode[putt]==false){
 				put_activenode[putt]=true;
 				if(user[initnode[putt]].active==0){
@@ -139,6 +140,7 @@ int main(int argc,char* argv[]){
 				}
 				putt++;
 			}
+			/////////////////////////////////////////////////////////////////////////////////
 			if(!infl.empty()){
 				tmp=infl.front();
 				infl.pop();
