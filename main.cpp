@@ -4,9 +4,10 @@
 #include <cstdlib>
 #include <ctime>
 #include <queue>
+#include <algorithm>
 
 #define maxx 90000
-#define runtimes 1000
+#define runtimes 5000
 #define initnum 3
 #define random 10000	//for random from 0.0001 to 1
 
@@ -75,17 +76,20 @@ void friend_choice_initnode(){
 		initnode[i]=j;
 	}
 }
+int check[maxx];
+
 int main(int argc,char* argv[]){
 	int a,b;
 	double c;
 	queue<int>infl;		//to do bfs
 	int influence_times[maxx];
 	int result_num[100]={0},sum=0;
-	FILE *read_edge,*out;
+	FILE *read_edge,*out,*ccc;
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
 	out=fopen("round_put.txt","w");
+	ccc=fopen("check.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
@@ -102,11 +106,11 @@ int main(int argc,char* argv[]){
 
 	//random_choice_initnode();
 	//friend_choice_initnode();
-	choice_initnode(7363,6281,3971);
+	choice_initnode(14307,32159,37200);
 
 	int initnode_be_effected[10]={0};		//count it is active node but it have been effected times
 	bool put_activenode[10]={0};	//to put active node for the some round
-	int put_time[10]={0,4,8},putt;	//the round should be put
+	int put_time[10]={0,1,2},putt;	//the round should be put
 									//putt record the  which round is next round 	
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -116,13 +120,17 @@ int main(int argc,char* argv[]){
 			user[i].active=0;
 			user[i].round_time=-1;
 		}
+		memset(check,0,sizeof(check));
+		////////////////////////////
 		/*for(int i=0;i<initnum;i++){	//put all initial node to queue
 			user[initnode[i]].active=1;
 			user[initnode[i]].round_time=0;
 			infl.push(initnode[i]);
 		}*/
+		/////////////////////////////
 		putt=0;
 		memset(put_activenode,0,sizeof(put_activenode));
+		int x=0;
 		int tmp,tmp_round=0;	//tmp_round record round_time of queue.front
 		while(!infl.empty() || !is_init_put(initnode)){
 			//for each round to put the act node once, and check the node
@@ -144,11 +152,15 @@ int main(int argc,char* argv[]){
 			if(!infl.empty()){
 				tmp=infl.front();
 				infl.pop();
-				tmp_round=user[tmp].round_time;
-				result_num[tmp_round]++;
+				if(check[tmp] != 1){
+					tmp_round=user[tmp].round_time;
+					result_num[tmp_round]++;
+				}
+				//check[x++]=tmp;
 			}
 			else{
 				tmp_round=put_time[putt];
+				continue;
 			}
 			//printf("tmp_round=%d %d %d\n",tmp_round,putt,put_activenode[putt]);
 			int friendnum=user[tmp].friends.size();
@@ -169,7 +181,7 @@ int main(int argc,char* argv[]){
 	//	printf("%4d\n",initnode[i]);
 	fprintf(out,"The initial node and its num of friends\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%4d %4d     %.2lf\n",initnode[i],user[initnode[i]].friends.size()
+		fprintf(out,"%4d %4d     %.3lf\n",initnode[i],user[initnode[i]].friends.size()
 				,(double)user[initnode[i]].expect);
 	fprintf(out,"init node be influeced before active times\n");
 	for(int i=0;i<initnum;i++)
