@@ -7,13 +7,8 @@
 #include <algorithm>
 
 #define maxx 90000
-<<<<<<< HEAD
 #define runtimes 1000
 #define initnum 10
-=======
-#define runtimes 5000
-#define initnum 3
->>>>>>> c57ebaa6d330f9ced5eda471c4add24e9b56d37a
 #define random 10000	//for random from 0.0001 to 1
 
 using namespace std;
