@@ -7,7 +7,7 @@ import xlsxwriter
 workbook = xlsxwriter.Workbook('result.xlsx')
 worksheet = workbook.add_worksheet()
 
-row = input('請輸入寫入行號,離開請按\"-1\" : ')
+row = input('請輸入寫入row,離開請按\"-1\" : ')
 col = 0
 
 while True:

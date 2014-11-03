@@ -13,13 +13,13 @@ int main(int argv,char *argc[]){
 	int random;
 	srand(time(NULL));
 	int rate;
-	while(fscanf(inEdge,"%s %s",a,b) != EOF){
-		fprintf(outEdge, "%s %s 0.1\n",a,b);
-		/*random=rand()%3;
+	while(fscanf(inEdge,"%s %s",a,b,c) != EOF){
+		fprintf(outEdge, "%s %s ",a,b);
+		random=rand()%3;
 		if(random==0)	fprintf(outEdge,"0.1\n");
-		if(random==1)	fprintf(outEdge,"0.2\n");
-		if(random==2)	fprintf(outEdge,"0.3\n");
-		*/
+		if(random==1)	fprintf(outEdge,"0.01\n");
+		if(random==2)	fprintf(outEdge,"0.001\n");
+		
 	}
 	return 0;
 }

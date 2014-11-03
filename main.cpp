@@ -4,10 +4,11 @@
 #include <cstdlib>
 #include <ctime>
 #include <queue>
+#include <algorithm>
 
 #define maxx 90000
 #define runtimes 1000
-#define initnum 3
+#define initnum 10
 #define random 10000	//for random from 0.0001 to 1
 
 using namespace std;
@@ -55,10 +56,9 @@ void random_choice_initnode(){
 	}
 }
 
-void choice_initnode(int a, int b, int c){
-	initnode[0]=a;
-	initnode[1]=b;
-	initnode[2]=c;
+void choice_initnode(int by_choice[],int num){
+	for(int i=0;i<num;i++)
+		initnode[i]=by_choice[i];
 }
 
 void friend_choice_initnode(){
@@ -75,6 +75,8 @@ void friend_choice_initnode(){
 		initnode[i]=j;
 	}
 }
+int check[maxx];	//check whether particular round has put the seed
+
 int main(int argc,char* argv[]){
 	int a,b;
 	double c;
@@ -90,6 +92,7 @@ int main(int argc,char* argv[]){
 	friending inputfriend;
 
 	while(fscanf(read_edge,"%d %d %lf",&a,&b,&c) != EOF){	//read the adge
+		user[a].id=a;
 		inputfriend.id=b;
 		inputfriend.rand=c;
 		user[a].friends.push_back(inputfriend);
@@ -102,11 +105,13 @@ int main(int argc,char* argv[]){
 
 	//random_choice_initnode();
 	//friend_choice_initnode();
-	choice_initnode(7363,6281,3971);
+	int by_choice[]={40, 250, 159, 108, 116, 651, 191, 44, 6895, 36};
+	//int by_choice[]={36};
+	choice_initnode(by_choice,initnum);
 
 	int initnode_be_effected[10]={0};		//count it is active node but it have been effected times
 	bool put_activenode[10]={0};	//to put active node for the some round
-	int put_time[10]={0,4,8},putt;	//the round should be put
+	int putt,put_time[10]={0,3,5,9,12,15,16,18,21,23};	//the round should be put
 									//putt record the  which round is next round 	
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -116,13 +121,17 @@ int main(int argc,char* argv[]){
 			user[i].active=0;
 			user[i].round_time=-1;
 		}
+		memset(check,0,sizeof(check));
+		////////////////////////////
 		/*for(int i=0;i<initnum;i++){	//put all initial node to queue
 			user[initnode[i]].active=1;
 			user[initnode[i]].round_time=0;
 			infl.push(initnode[i]);
 		}*/
+		/////////////////////////////
 		putt=0;
 		memset(put_activenode,0,sizeof(put_activenode));
+		int x=0;
 		int tmp,tmp_round=0;	//tmp_round record round_time of queue.front
 		while(!infl.empty() || !is_init_put(initnode)){
 			//for each round to put the act node once, and check the node
@@ -135,7 +144,7 @@ int main(int argc,char* argv[]){
 					user[initnode[putt]].active=1;
 					user[initnode[putt]].round_time=tmp_round;
 				}
-				else{
+				else if(putt<initnum){
 					initnode_be_effected[putt]++;
 				}
 				putt++;
@@ -144,11 +153,15 @@ int main(int argc,char* argv[]){
 			if(!infl.empty()){
 				tmp=infl.front();
 				infl.pop();
-				tmp_round=user[tmp].round_time;
-				result_num[tmp_round]++;
+				if(check[tmp] != 1){
+					tmp_round=user[tmp].round_time;
+					result_num[tmp_round]++;
+				}
+				//check[x++]=tmp;
 			}
 			else{
 				tmp_round=put_time[putt];
+				continue;
 			}
 			//printf("tmp_round=%d %d %d\n",tmp_round,putt,put_activenode[putt]);
 			int friendnum=user[tmp].friends.size();
@@ -169,17 +182,20 @@ int main(int argc,char* argv[]){
 	//	printf("%4d\n",initnode[i]);
 	fprintf(out,"The initial node and its num of friends\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%4d %4d     %.2lf\n",initnode[i],user[initnode[i]].friends.size()
+		fprintf(out,"%4d %4d     %.3lf\n",initnode[i],user[initnode[i]].friends.size()
 				,(double)user[initnode[i]].expect);
 	fprintf(out,"init node be influeced before active times\n");
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%3d     ",initnode_be_effected[i]);
 	fprintf(out,"\naverage round\n");
-	for(int i=0;result_num[i]!=0 || i<put_time[2];i++){		//caulate the average of each round
+	for(int i=0;result_num[i]!=0 || i<put_time[3];i++){		//caulate the average of each round
 		sum+=result_num[i];
 		//printf("%d\n",result_num[i]);
 		fprintf(out,"%.3lf\n",result_num[i]/(double)runtimes);
 	}
 	fprintf(out,"the average num: \n%.3lf\n",sum/(double)runtimes);
+	
+	fclose(read_edge);
+	fclose(out);
 	return 0;
 }
