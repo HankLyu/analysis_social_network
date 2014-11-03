@@ -7,8 +7,13 @@
 #include <algorithm>
 
 #define maxx 90000
+<<<<<<< HEAD
 #define runtimes 1000
 #define initnum 10
+=======
+#define runtimes 5000
+#define initnum 3
+>>>>>>> c57ebaa6d330f9ced5eda471c4add24e9b56d37a
 #define random 10000	//for random from 0.0001 to 1
 
 using namespace std;
@@ -75,7 +80,11 @@ void friend_choice_initnode(){
 		initnode[i]=j;
 	}
 }
+<<<<<<< HEAD
 int check[maxx];	//check whether particular round has put the seed
+=======
+int check[maxx];
+>>>>>>> c57ebaa6d330f9ced5eda471c4add24e9b56d37a
 
 int main(int argc,char* argv[]){
 	int a,b;
@@ -83,11 +92,12 @@ int main(int argc,char* argv[]){
 	queue<int>infl;		//to do bfs
 	int influence_times[maxx];
 	int result_num[100]={0},sum=0;
-	FILE *read_edge,*out;
+	FILE *read_edge,*out,*ccc;
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
 	out=fopen("round_put.txt","w");
+	ccc=fopen("check.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
