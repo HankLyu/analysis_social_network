@@ -9,7 +9,7 @@
 
 #define maxx 90000
 #define runtimes 1000
-#define initnum 6
+#define initnum 1
 #define random 10000	//for random from 0.0001 to 1
 
 using namespace std;
@@ -35,9 +35,10 @@ bool social_cmp(social a, social b){
 struct combination{
 	char people[50];
 	int num;
+	double expect;
 };
 bool comb_cmp(combination a, combination b){
-	return a.num > b.num;
+	return a.expect > b.expect;
 }
 
 social user[maxx];
@@ -98,12 +99,7 @@ int main(int argc,char* argv[]){
 	combination comb_tmp;
 	for(int x=0;x<nummax;x++){
 		if(!user[x].exist)	continue;
-		initnode[0]=634;
-		initnode[1]=116;
-		initnode[2]=833;
-		initnode[3]=44;
-		initnode[4]=1505;
-		initnode[5]=x;
+		initnode[0]=x;
 		memset(result_num,0,sizeof(result_num));
 	for(int t=0;t<runtimes;t++){
 		for(int i=0;i<nummax;i++){	//initial each node
@@ -163,7 +159,8 @@ int main(int argc,char* argv[]){
 				for(int i=0;result_num[i]!=0;i++)
 					tmp_num+=result_num[i];
 				comb_tmp.num=tmp_num;
-				sprintf(comb_tmp.people,"%d %d %d %d %d %d"
+				comb_tmp.expect=user[initnode[0]].expect;
+				sprintf(comb_tmp.people,"%d"
 					,initnode[0],initnode[1],initnode[2],initnode[3]
 					,initnode[4],initnode[5],initnode[6],initnode[7]
 					,initnode[8],initnode[9]);
@@ -174,8 +171,8 @@ int main(int argc,char* argv[]){
 
 	sort(comb.begin(),comb.end(),comb_cmp);
 	for(int i=0;i<comb.size();i++)
-		fprintf(out,"%s    %3lf\n",comb[i].people
-			,comb[i].num/(double)runtimes);
+		fprintf(out,"%s\t%lf\t%3lf\n",comb[i].people
+			,comb[i].expect, comb[i].num/(double)runtimes);
 	fclose(read_edge);
 	fclose(out);
 	return 0;

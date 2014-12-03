@@ -8,8 +8,9 @@
 
 #define maxx 90000
 #define runtimes 1000
-#define initnum 10
-#define random 10000	//for random from 0.0001 to 1
+#define initnum 6
+#define thres1 100
+#define thres2 50
 
 using namespace std;
 
@@ -27,9 +28,7 @@ struct social{
 };
 
 double take_random(){
-	//srand(time(NULL));
-	double result=rand() % random;
-	result = result / (double)random;
+	double result=(double) rand() / (RAND_MAX + 1.0 );
 	return result;
 }
 
@@ -75,11 +74,7 @@ void friend_choice_initnode(){
 		initnode[i]=j;
 	}
 }
-<<<<<<< HEAD
 int check[maxx];	//check whether particular round has put the seed
-=======
-int check[maxx];
->>>>>>> c57ebaa6d330f9ced5eda471c4add24e9b56d37a
 
 int main(int argc,char* argv[]){
 	int a,b;
@@ -110,13 +105,20 @@ int main(int argc,char* argv[]){
 
 	//random_choice_initnode();
 	//friend_choice_initnode();
-	int by_choice[]={40, 250, 159, 108, 116, 651, 191, 44, 6895, 36};
-	//int by_choice[]={36};
+	//5381	2.014125	704.095000
+	//23502	2.010466	814.617000
+	//15747	2.027851	841.447000
+	//8031	2.248835	1794.408000
+	//23151	2.235933	1627.406000
+	//42482	2.260170	2304.079000
+
+	//int by_choice[]={5381, 23502, 15747, 23151, 42482, 8031};
+	int by_choice[]={8031, 23151, 42482, 15747, 23502, 5381};
 	choice_initnode(by_choice,initnum);
 
 	int initnode_be_effected[10]={0};		//count it is active node but it have been effected times
 	bool put_activenode[10]={0};	//to put active node for the some round
-	int putt,put_time[10]={0,3,5,9,12,15,16,18,21,23};	//the round should be put
+	int putt,put_time[10]={0,3,10,15,19,24};	//the round should be put
 									//putt record the  which round is next round 	
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -185,20 +187,29 @@ int main(int argc,char* argv[]){
 	//printf("init node:\n");
 	//for(int i=0;i<initnum;i++)
 	//	printf("%4d\n",initnode[i]);
+	int thres1_up=0, thres2_up=0;
 	fprintf(out,"The initial node and its num of friends\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%4d %4d     %.3lf\n",initnode[i],user[initnode[i]].friends.size()
+		fprintf(out,"%4d\t%4d\t%.3lf\n",initnode[i],user[initnode[i]].friends.size()
 				,(double)user[initnode[i]].expect);
-	fprintf(out,"init node be influeced before active times\n");
+	fprintf(out,"put round\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d     ",initnode_be_effected[i]);
-	fprintf(out,"\naverage round\n");
-	for(int i=0;result_num[i]!=0 || i<put_time[3];i++){		//caulate the average of each round
+		fprintf(out,"%3d\t",put_time[i]);
+	fprintf(out,"\ninit node be influeced before active times\n");
+	for(int i=0;i<initnum;i++)
+		fprintf(out,"%3d\t",initnode_be_effected[i]);
+	fprintf(out, "\n");
+	for(int i=0;result_num[i]!=0 || i<put_time[initnum];i++){		//caulate the average of each round
 		sum+=result_num[i];
-		//printf("%d\n",result_num[i]);
-		fprintf(out,"%.3lf\n",result_num[i]/(double)runtimes);
+		int tmp=result_num[i]/(double)runtimes;
+		if(tmp>thres1)	thres1_up++;
+		if(tmp>thres2)	thres2_up++;
 	}
+	fprintf(out,"%4d up:\t%3d\n%4d up:\t%3d\n",thres1,thres1_up,thres2,thres2_up);
 	fprintf(out,"the average num: \n%.3lf\n",sum/(double)runtimes);
+	fprintf(out,"average round\n");
+	for(int i=0;result_num[i]!=0;i++)
+		fprintf(out,"%.3lf\n",result_num[i]/(double)runtimes);
 	
 	fclose(read_edge);
 	fclose(out);

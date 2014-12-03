@@ -7,8 +7,6 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 5000
-#define initnum 3
 #define random 10000	//for random from 0.0001 to 1
 
 using namespace std;
@@ -35,7 +33,6 @@ double take_random(){
 
 social user[maxx];
 int exist[maxx];
-int initnode[initnum];
 int nummax;		//nummax to record the max id
 
 bool cmp(social a, social b){
