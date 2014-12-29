@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 1000
+#define runtimes 10000
 #define initnum 6
 #define thres1 100
 #define thres2 50
@@ -32,16 +32,17 @@ int exist[maxx];
 int nummax;		//nummax to record the max id
 
 double take_random();
-bool is_all_init_put(int seed[]);
+bool is_all_init_put(int seed[], int seednum);
 void random_choice_seed(int seed[]);
 void choice_seed(int by_choice[],int num, int seed[]);
-void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[]);
-
+void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
+void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum);
+void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
 
 int main(int argc,char* argv[]){
 	int a,b;
 	double c;
-	int seed[initnum];
+	int seed[100];
 	int influence_times[maxx];
 	double influenced_num_round[100]={0},sum=0;
 	FILE *read_edge,*out;
@@ -64,18 +65,22 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	//random_choice_seed();
+	//random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	//int by_choice[]={19777, 9982, 2813, 7052, 248, 5920};
-	int by_choice[]={19777, 9982, 2813, 5920, 248, 7052};
-	choice_seed(seed, initnum, seed);
+	//int by_choice[]={2813, 9982, 7052, 248, 19777, 5920};
+	int by_choice[]={5699, 40602, 28977, 16738, 19406, 14133};
+	//int by_choice[]={28977, 5699, 16738, 14133, 19406, 40602};
+	choice_seed(by_choice, initnum, seed);
 
 	int seed_be_effected[10]={0};		//count it is active node but it have been effected times
-	int put_time[10]={0,11,17,24,29,30};	//the round should be put
+	int put_time[10]={0,1,17,24,29,30};	//the round should be put
 	
-	run_result(by_choice, put_time, influenced_num_round, seed_be_effected);
+	//greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
+	run_puttime(seed, put_time, influenced_num_round, seed_be_effected, initnum, 0);
+	memset(seed_be_effected,0,sizeof(seed_be_effected));
+	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	//print the result
 	//printf("init node:\n");
 	//for(int i=0;i<initnum;i++)
@@ -90,7 +95,7 @@ int main(int argc,char* argv[]){
 		fprintf(out,"%3d\t",put_time[i]);
 	fprintf(out,"\ninit node be influeced before active times\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d\t",seed_be_effected[i]);
+		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
 	fprintf(out, "\n");
 	for(int i=0;influenced_num_round[i]!=0 || i<put_time[initnum];i++){		//caulate the average of each round
 		sum+=influenced_num_round[i];
@@ -113,8 +118,8 @@ double take_random(){
 	double result=(double) rand() / (RAND_MAX + 1.0 );
 	return result;
 }
-bool is_all_init_put(int seed[]){
-	for(int i=0;i<initnum;i++)
+bool is_all_init_put(int seed[], int seednum){
+	for(int i=0;i<seednum;i++)
 		if(user[seed[i]].active==0)
 			return false;
 	return true;
@@ -136,7 +141,7 @@ void choice_seed(int by_choice[], int num, int seed[]){
 		seed[i]=by_choice[i];
 }
 
-void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[]){
+void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	bool put_activenode[10]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
 	int times_result_num[100]={0};
@@ -151,7 +156,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			user[i].round_time=-1;
 		}
 		////////////////////////////
-		/*for(int i=0;i<initnum;i++){	//put all initial node to queue
+		/*for(int i=0;i<seednum;i++){	//put all initial node to queue
 			user[seed[i]].active=1;
 			user[seed[i]].round_time=0;
 			infl.push(seed[i]);
@@ -161,18 +166,18 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 		memset(put_activenode,0,sizeof(put_activenode));
 		int x=0;
 		int tmp,tmp_round=0;	//tmp_round record round_time of queue.front
-		while(!infl.empty() || !is_all_init_put(seed)){
+		while(!infl.empty() || !is_all_init_put(seed, seednum)){
 			//for each round to put the act node once, and check the node
 			//has been influenced. if yes record this, no put it into queue
 			//////////////////////////////////////////////////////////////////////////////////
-			if(put_time[next_seed]==tmp_round && next_seed<initnum && put_activenode[next_seed]==false){
+			if(put_time[next_seed]==tmp_round && next_seed<seednum && put_activenode[next_seed]==false){
 				put_activenode[next_seed]=true;
 				if(user[seed[next_seed]].active==0){
 					infl.push(seed[next_seed]);
 					user[seed[next_seed]].active=1;
 					user[seed[next_seed]].round_time=tmp_round;
 				}
-				else if(next_seed < initnum){
+				else if(next_seed < seednum){
 					seed_be_effected[next_seed]++;
 				}
 				next_seed++;
@@ -200,7 +205,75 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0;times_result_num[i]!=0 || i<put_time[initnum];i++){		//caulate the average of each round
+	for(int i=0;times_result_num[i]!=0 || i<put_time[seednum];i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
+}
+
+void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum){
+	for(int i=startnum; i<seednum; i++){
+		if(i == 0){
+			put_time[0]=0;
+			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
+			continue;
+		}
+		int max_num_round=0, best_put_time=0, max_thres=0;
+		int tmp_num_round;
+		printf("i=%d\n",i);
+		for(int j=put_time[i-1]+1; j<put_time[i-1]+15;j++){
+			put_time[i]=j;
+			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
+			tmp_num_round=0;
+			for(int k=0;influenced_num_round[k]!=0 || k<put_time[initnum]; k++){		//caulate the average of each round
+				if(influenced_num_round[k]>thres1)	tmp_num_round++;
+			}
+			if(max_num_round < tmp_num_round){
+				max_num_round = tmp_num_round;
+				best_put_time = j;
+			}
+		}//for(int j=put_time[i]+1; j<put_time[i]+15;j++)
+		put_time[i]=best_put_time;
+		printf("best_put_time is %d\n", put_time[i]);
+	}//for(int i=1; i<seednum; i++)
+}
+
+void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
+	int curnum=0, be_put[initnum]={0};
+	int best_put_order[initnum];
+	int best_put_time;
+	for(int i=0;i<curnum;i++){
+		be_put[i]=1;
+		best_put_order[i]=seed[i];
+	}
+	while(curnum < seednum){
+		int min_overthres=1e5;	//record best seed for this order
+		int bestput_thisround=-1;
+		for(int i=0; i<seednum; i++){
+			int max_overthres=0;	//record for each point which is max
+			if(be_put[i] == 1)	continue;
+
+			best_put_order[curnum] = seed[i];
+			run_puttime(best_put_order, put_time, influenced_num_round, seed_be_effected, curnum+1, curnum);
+			for(int j=put_time[curnum]; j < put_time[curnum]+35; j++){
+				//printf("%lf\n",influenced_num_round[j]);
+				if(influenced_num_round[j]>thres1){
+					max_overthres=max(max_overthres, (int)influenced_num_round[j]);
+				}
+			}
+			//printf("seed %d max over %d\n", seed[i], max_overthres);
+			if(max_overthres < min_overthres && max_overthres>thres1){
+				min_overthres=max_overthres;
+				bestput_thisround = i;
+				best_put_time=put_time[curnum];
+			}
+		}//for(int i=0; i<seednum; i++)
+		if(bestput_thisround == -1)	printf("error!!!!!\n");
+		best_put_order[curnum] = seed[bestput_thisround];
+		be_put[bestput_thisround] = 1;
+		put_time[curnum]=best_put_time;
+		printf("----------%d round is %d\n", curnum, best_put_order[curnum]);
+		curnum++;
+	}//while(curnum < seednum)
+	for(int i=0; i<seednum; i++)
+		seed[i] = best_put_order[i];
 }
