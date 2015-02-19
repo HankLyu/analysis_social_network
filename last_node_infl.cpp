@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 10000
+#define runtimes 100
 #define initnum 6
 #define thres1 100
 #define thres2 50
@@ -242,8 +242,17 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
         // last_node_infl algorithm core
         int last_round_under_thres;
         run_result(seed, put_time, influenced_num_round, seed_be_effected, i);
-        for(int j=put_time[i-1]+1; thres1 < influenced_num_round[j]; j++){
-            last_round_under_thres = j;
+        bool upto_thres=false;
+        for(int j=put_time[i-1]+1;influenced_num_round[j] != 0; j++){
+            if(influenced_num_round[j] > thres1)	upto_thres=true;
+            if(upto_thres){
+            	if(influenced_num_round[j] < thres1){
+            		last_round_under_thres = j-1;
+            		break;
+            	}
+            }
+            
+        	
         }
 
 		printf("i=%d\n",i);
