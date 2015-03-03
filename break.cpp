@@ -105,9 +105,17 @@ int main(int argc,char* argv[]){
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
 	fprintf(out, "\n");
-	for(int i=0;influenced_num_round[i]!=0 || i<put_time[initnum];i++){		//caulate the average of each round
+	bool upto_thres=false;
+	for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
+		if(influenced_num_round[k] > thres1)	upto_thres=true;
+		if(upto_thres){
+			//printf("tmp_num_round %d\n", tmp_num_round);
+			if(influenced_num_round[k]>thres1)	thres1_up++;
+			else break;
+		}
+	}
+	for(int i=0;influenced_num_round[i]> 0.0;i++){		//caulate the average of each round
 		sum+=influenced_num_round[i];
-		if(influenced_num_round[i]>thres1)	thres1_up++;
 		if(influenced_num_round[i]>thres2)	thres2_up++;
 	}
 	fprintf(out,"%4d up:\t%3d\n%4d up:\t%3d\n",thres1,thres1_up,thres2,thres2_up);
@@ -232,8 +240,15 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			put_time[i]=j;
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			tmp_num_round=0;
-			for(int k=0;influenced_num_round[k]!=0 || k<put_time[initnum]; k++){		//caulate the average of each round
-				if(influenced_num_round[k]>thres1)	tmp_num_round++;
+			bool upto_thres=false;
+			for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
+				if(influenced_num_round[k] > thres1){
+					upto_thres=true;
+					tmp_num_round++;
+				}		
+				if(upto_thres && influenced_num_round[k]<thres1){
+					break;
+				}
 			}
 			if(max_num_round < tmp_num_round){		//check whether this put time have better progation
 				max_num_round = tmp_num_round;
