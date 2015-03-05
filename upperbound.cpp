@@ -38,7 +38,6 @@ int nummax;		//nummax to record the max id
 
 double take_random();
 bool is_all_init_put(int seed[], int seednum);
-void random_choice_seed(int seed[]);
 void choice_seed(int by_choice[],int num, int seed[]);
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum);
@@ -143,17 +142,6 @@ bool is_all_init_put(int seed[], int seednum){
 			return false;
 	return true;
 }
-void random_choice_seed(int seed[]){
-	for(int i=0,j;i<initnum;i++){	//choose seed
-		do{
-			j=rand()%nummax;
-		}while(user[j].active==1 || exist[j]==0);
-		//if this user is selected or this user is not existed
-		//choose new user again
-		seed[i]=j;
-		//user[j].active=1;
-	}
-}
 
 void choice_seed(int by_choice[], int num, int seed[]){
 	for(int i=0;i<num;i++)
@@ -233,6 +221,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 	for(int i=startnum; i<seednum; i++){
 		if(i == 0){
 			put_time[0]=0;
+			printf("choose first seed: %d\n", seed[0]);
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			continue;
 		}

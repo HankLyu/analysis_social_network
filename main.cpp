@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 1000
+#define runtimes 500
 #define initnum 20
 #define random_choice_thres 500
 #define thres1 100
@@ -43,9 +43,9 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 int main(int argc,char* argv[]){
 	int a,b;
 	double c;
-	int seed[100];
+	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[100]={0},sum=0;
+	double influenced_num_round[initnum*20]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -67,19 +67,19 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	random_choice_seed(seed);
+	//random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
 	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
 	//int by_choice[]={14613, 25069, 42384, 9620, 5657, 7037};
-	//choice_seed(by_choice, initnum, seed);
+	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
 	printf("\n");
 
-	int seed_be_effected[10]={0};		//count it is active node but it have been effected times
-	int put_time[10]={0,2,4,5,13,23};	//the round should be put
+	int seed_be_effected[initnum+5]={0};		//count it is active node but it have been effected times
+	int put_time[initnum+5]={0,2,4,5,13,23};	//the round should be put
 	
 	start_time = time(NULL);
 	greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
@@ -142,7 +142,7 @@ bool is_all_init_put(int seed[], int seednum){
 	return true;
 }
 void random_choice_seed(int seed[]){
-	double sum, tmp_influence[100];
+	double sum, tmp_influence[initnum*20];
 	int tmp_seed[5], tmp_puttime[5], tmp_effect[5];
 	for(int i=0,j;i<initnum;i++){	//choose seed
 		while(1){
@@ -151,7 +151,7 @@ void random_choice_seed(int seed[]){
 			tmp_seed[0]=j;
 			run_result(tmp_seed, tmp_puttime, tmp_influence, tmp_effect, 1);
 			sum=0;
-			for(int k=0; tmp_influence[k]>0.0 && k<100; k++){
+			for(int k=0; tmp_influence[k]>0.0 && k<initnum*20; k++){
 				//printf("%lf\n", tmp_influence[k]);
 				sum += tmp_influence[k];
 			}
@@ -184,9 +184,9 @@ void choice_seed(int by_choice[], int num, int seed[]){
 }
 
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
-	bool put_activenode[10]={0};	//to put active node for the some round
+	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
-	int times_result_num[100]={0};
+	int times_result_num[initnum*20]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -257,6 +257,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 	for(int i=startnum; i<seednum; i++){
 		if(i == 0){
 			put_time[0]=0;
+			printf("choose first seed: %d\n", seed[0]);
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			continue;
 		}

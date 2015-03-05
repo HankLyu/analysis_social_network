@@ -42,9 +42,9 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 int main(int argc,char* argv[]){
 	int a,b;
 	double c;
-	int seed[100];
+	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[100]={0},sum=0;
+	double influenced_num_round[initnum*20]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -77,8 +77,8 @@ int main(int argc,char* argv[]){
 		printf("%d ",seed[i]);
 	printf("\n");
 
-	int seed_be_effected[10]={0};		//count it is active node but it have been effected times
-	int put_time[10]={0,2,4,5,13,23};	//the round should be put
+	int seed_be_effected[initnum+5]={0};		//count it is active node but it have been effected times
+	int put_time[initnum+5]={0,2,4,5,13,23};	//the round should be put
 	
 	start_time = time(NULL);
 	//greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
@@ -141,7 +141,7 @@ bool is_all_init_put(int seed[], int seednum){
 	return true;
 }
 void random_choice_seed(int seed[]){
-	double sum, tmp_influence[100];
+	double sum, tmp_influence[initnum*20];
 	int tmp_seed[5], tmp_puttime[5], tmp_effect[5];
 	for(int i=0,j;i<initnum;i++){	//choose seed
 		while(1){
@@ -183,9 +183,9 @@ void choice_seed(int by_choice[], int num, int seed[]){
 }
 
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
-	bool put_activenode[10]={0};	//to put active node for the some round
+	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
-	int times_result_num[100]={0};
+	int times_result_num[initnum*20]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -256,6 +256,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 	for(int i=startnum; i<seednum; i++){
 		if(i == 0){
 			put_time[0]=0;
+			printf("choose first seed: %d\n", seed[0]);
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			continue;
 		}
