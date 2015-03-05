@@ -50,7 +50,7 @@ int main(int argc,char* argv[]){
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
-	out=fopen("round_put.txt","w");
+	out=fopen("last_put.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
@@ -86,8 +86,8 @@ int main(int argc,char* argv[]){
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	finish_time = time(NULL);
 	std::cout<<"start time "<<start_time<<endl << "end time "<< finish_time<<endl;
-	std::cout<< "the finish time is "<<(finish_time - start_time)<<endl;
-	fprintf(out,"The estimate run time is %d\n", (finish_time - start_time));
+	std::cout<< "the last time is "<<(finish_time - start_time)<<endl;
+	fprintf(out,"The last run time is %d\n", (finish_time - start_time));
 	memset(seed_be_effected,0,sizeof(seed_be_effected));
 	//print the result
 	//printf("init node:\n");

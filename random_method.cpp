@@ -50,7 +50,7 @@ int main(int argc,char* argv[]){
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
-	out=fopen("greedy_put.txt","w");
+	out=fopen("random_put.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
@@ -81,13 +81,13 @@ int main(int argc,char* argv[]){
 	int put_time[10]={0,2,4,5,13,23};	//the round should be put
 	
 	start_time = time(NULL);
-	greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
-	//run_puttime(seed, put_time, influenced_num_round, seed_be_effected, initnum, 0);
+	//greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
+	run_puttime(seed, put_time, influenced_num_round, seed_be_effected, initnum, 0);
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	finish_time = time(NULL);
 	std::cout<<"start time "<<start_time<<endl << "end time "<< finish_time<<endl;
-	std::cout<< "the greedy time is "<<(finish_time - start_time)<<endl;
-	fprintf(out,"The greedy run time is %d\n", (finish_time - start_time));
+	std::cout<< "the random time is "<<(finish_time - start_time)<<endl;
+	fprintf(out,"The random run time is %d\n", (finish_time - start_time));
 	memset(seed_be_effected,0,sizeof(seed_be_effected));
 	//print the result
 	//printf("init node:\n");
@@ -170,14 +170,14 @@ void choice_seed(int by_choice[], int num, int seed[]){
 	bool chose[initnum]={0};
 	int randnum;
 	for(int i=0;i<num;i++){
-		/*do{	//this comment is to do random order for seed
+		do{	//this comment is to do random order for seed
 			randnum = rand()%num;
 		}
 		while(chose[randnum] == true);
 		chose[randnum]=true;
-		*/
+		
 		//printf("%d\n", randnum);
-		randnum=i;
+		//randnum=i;
 		seed[randnum]=by_choice[i];
 	}
 }

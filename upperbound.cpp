@@ -56,7 +56,7 @@ int main(int argc,char* argv[]){
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
-	out=fopen("round_put_3.txt","w");
+	out=fopen("Upperbound_put.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
