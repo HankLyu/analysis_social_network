@@ -51,7 +51,7 @@ int main(int argc,char* argv[]){
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
-	out=fopen("round_put_2.txt","w");
+	out=fopen("break_put.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
@@ -72,7 +72,7 @@ int main(int argc,char* argv[]){
 	//9881, 30635, 8932
 
 	//int by_choice[]={2813, 9982, 7052, 248, 19777, 5920};
-	int by_choice[]={6751, 10464, 14014, 26970, 7781, 14625};
+	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
 	//int by_choice[]={28977, 5699, 16738, 14133, 19406, 40602};
 	choice_seed(by_choice, initnum, seed);
 

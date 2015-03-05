@@ -7,8 +7,9 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 10000
-#define initnum 6
+#define runtimes 1000
+#define initnum 20
+#define random_choice_thres 500
 #define thres1 100
 #define thres2 50
 
@@ -66,13 +67,13 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	//random_choice_seed(seed);
+	random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
 	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
 	//int by_choice[]={14613, 25069, 42384, 9620, 5657, 7037};
-	choice_seed(by_choice, initnum, seed);
+	//choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
 	printf("\n");
@@ -155,7 +156,7 @@ void random_choice_seed(int seed[]){
 				sum += tmp_influence[k];
 			}
 			//printf("sum:%lf\n", sum);
-			if(sum > thres1*7)
+			if(sum > random_choice_thres)
 				break;
 		}
 		printf("seed: %d id: %d effected num: %lf\n", i, j, sum);
