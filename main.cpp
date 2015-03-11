@@ -7,8 +7,8 @@
 #include <algorithm>
 
 #define maxx 90000
-#define runtimes 500
-#define initnum 20
+#define runtimes 1000
+#define initnum 12
 #define random_choice_thres 500
 #define thres1 100
 #define thres2 50
@@ -71,8 +71,8 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
-	//int by_choice[]={14613, 25069, 42384, 9620, 5657, 7037};
+	//int by_choice[]={4841, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
+	int by_choice[]={15026, 50290, 10423, 7489, 35723, 20862, 19650, 9289, 12843, 10143, 43917, 15380};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
@@ -84,6 +84,7 @@ int main(int argc,char* argv[]){
 	start_time = time(NULL);
 	greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	//run_puttime(seed, put_time, influenced_num_round, seed_be_effected, initnum, 0);
+	memset(seed_be_effected,0,sizeof(seed_be_effected));
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	finish_time = time(NULL);
 	std::cout<<"start time "<<start_time<<endl << "end time "<< finish_time<<endl;
@@ -270,12 +271,11 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			tmp_num_round=0;
 			bool upto_thres=false;
 			for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
-				if(influenced_num_round[k] > thres1){
-					upto_thres=true;
-					tmp_num_round++;
-				}		
-				if(upto_thres && influenced_num_round[k]<thres1){
-					break;
+				if(influenced_num_round[k] > thres1)	upto_thres=true;
+				if(upto_thres){
+					//printf("tmp_num_round %d\n", tmp_num_round);
+					if(influenced_num_round[k]>thres1)	tmp_num_round++;
+					else break;
 				}
 			}
 			//printf("%d %d %d\n", i, j, tmp_num_round);
@@ -285,13 +285,16 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			}
 		}//for(int j=put_time[i]+1; j<put_time[i]+15;j++)
 		put_time[i]=best_put_time;
-		printf("best_put_time is %d\n", put_time[i]);
+		printf("this seed %d: best_put_time is %d, round: %d\n", seed[i], put_time[i], max_num_round);
 	}//for(int i=1; i<seednum; i++)
 }
 
 void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	int curnum=0, be_put[initnum]={0};
-	int best_put_order[initnum];
+	int last_effect=0, seed_effect[initnum]={0};
+		//last_effect is to record how many rounds are over thres
+		//seed_effect is to record how many rounds are over thres to check whether this seed have enough influence
+	int best_put_order[initnum], begin_round=0, tmp_begin_round;
 	int best_put_time;	//record the time of the current seed
 	for(int i=0;i<curnum;i++){	//if the order of the part seeds is sure, change the "curnum" valure 
 		be_put[i]=1;
@@ -307,20 +310,61 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 
 			best_put_order[curnum] = seed[i];
 			run_puttime(best_put_order, put_time, influenced_num_round, seed_be_effected, curnum+1, curnum);
-			for(int j=put_time[curnum]; j < put_time[curnum]+35; j++){	//check the influencu wave
+			tmp_begin_round=begin_round;
+			for(int j=tmp_begin_round; j < put_time[curnum]+35; j++){	//check the influencu wave
 				//printf("%lf\n",influenced_num_round[j]);
-				if(influenced_num_round[j]>thres1){
-					max_overthres=max(max_overthres, (int)influenced_num_round[j]);
+				if(max_overthres < (int)influenced_num_round[j]){
+					max_overthres = (int)influenced_num_round[j];
+				}
+				max_overthres=max(max_overthres, (int)influenced_num_round[j]);
+			}
+			bool upto_thres=false;
+			for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
+				if(influenced_num_round[k] > thres1)	upto_thres=true;
+				if(upto_thres){
+					if(influenced_num_round[k]>thres1)	seed_effect[i]++;
+					else break;
 				}
 			}
 			//printf("seed %d max over %d\n", seed[i], max_overthres);
-			if(max_overthres < min_overthres && max_overthres>thres1){	//check whether the current seed is good
+			if(max_overthres < min_overthres && max_overthres>thres1
+				&& seed_effect[i] > last_effect){	//check whether the current seed is good
 				min_overthres=max_overthres;	//to sure the new seed just over the threshold a bit
 				bestseed_thisround = i;
 				best_put_time=put_time[curnum];
 			}
+			else if(bestseed_thisround == -1 || min_overthres<thres1){
+				if(min_overthres==1e5){
+					min_overthres=max_overthres;
+					bestseed_thisround = i;
+					best_put_time = put_time[curnum];
+				}
+				else if(min_overthres < max_overthres){
+					min_overthres=max_overthres;
+					bestseed_thisround = i;
+					best_put_time = put_time[curnum];
+				}
+			}
 		}//for(int i=0; i<seednum; i++)
-		if(bestseed_thisround == -1)	printf("error!!!!!\n");
+		if(bestseed_thisround == -1){
+			printf("no proper seed!!!!!\n");
+			for(int i=0; i<initnum; i++)
+				if(be_put[i]==0){
+					be_put[i]=1;
+					bestseed_thisround=i;
+					break;
+				}
+		}
+		//add the best current seed to the ans
+		int max_heap=0;
+		for(int j=tmp_begin_round; j < put_time[curnum]+35; j++){
+				//printf("%lf\n",influenced_num_round[j]);
+				if(max_heap < (int)influenced_num_round[j]){
+					max_heap = (int)influenced_num_round[j];
+					begin_round=j;
+				}
+			}
+		last_effect=seed_effect[bestseed_thisround];
 		best_put_order[curnum] = seed[bestseed_thisround];
 		be_put[bestseed_thisround] = 1;
 		put_time[curnum]=best_put_time;
