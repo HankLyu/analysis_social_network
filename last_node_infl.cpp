@@ -8,7 +8,7 @@
 
 #define maxx 90000
 #define runtimes 10000
-#define initnum 6
+#define initnum 12
 #define thres1 100
 #define thres2 50
 
@@ -70,7 +70,7 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
+	int by_choice[]={32181, 11632, 26537, 46892, 20428, 7815, 1917, 35762, 4024, 22840, 28927, 26207};
 	//int by_choice[]={7781, 14625, 6751, 26970, 14014, 10464};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
@@ -222,7 +222,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0;times_result_num[i]!=0 || i<put_time[seednum];i++){		//caulate the average of each round
+	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
 }
