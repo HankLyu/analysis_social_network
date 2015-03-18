@@ -8,7 +8,7 @@
 #include <stdint.h>
 
 #define maxx 90000
-#define runtimes 1000
+#define runtimes 10000
 #define initnum 12
 #define thres1 100
 #define thres2 50
@@ -76,7 +76,7 @@ int main(int argc,char* argv[]){
 	//9881, 30635, 8932
 
 	//int by_choice[]={2813, 9982, 7052, 248, 19777, 5920};
-	int by_choice[]={15026, 50290, 10423, 7489, 35723, 20862, 19650, 9289, 12843, 10143, 43917, 15380};
+	int by_choice[]={32181, 11632, 26537, 46892, 20428, 7815, 1917, 35762, 4024, 22840, 28927, 26207};
 	//int by_choice[]={28977, 5699, 16738, 14133, 19406, 40602};
 	choice_seed(by_choice, initnum, seed);
 
