@@ -15,13 +15,13 @@ int main(int argv,char *argc[]){
 	srand(time(NULL));
 	int rate;
 	while(fscanf(inEdge,"%s %s",a,b) != EOF){
-		fscanf(inRate,"%s",c);
-		fprintf(outEdge, "%s %s %s\n",a,b,c);
-		/*random=rand()%3;
+		//fscanf(inRate,"%s",c);
+		fprintf(outEdge, "%s %s ",a,b,c);
+		random=rand()%3;
 		if(random==0)	fprintf(outEdge,"0.1\n");
 		if(random==1)	fprintf(outEdge,"0.01\n");
 		if(random==2)	fprintf(outEdge,"0.001\n");
-		*/
+		
 	}
 	fclose(inEdge);
 	fclose(outEdge);
