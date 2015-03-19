@@ -67,13 +67,13 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	random_choice_seed(seed);
+	//random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
 	//int by_choice[]={4841, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
-	int by_choice[]={15026, 50290, 10423, 7489, 35723, 20862, 19650, 9289, 12843, 10143, 43917, 15380};
-	//choice_seed(by_choice, initnum, seed);
+	int by_choice[]={69808, 54403, 7587, 42407, 9310, 22150, 860, 74533, 10004, 4872, 55929, 55791};
+	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
 	printf("\n");
