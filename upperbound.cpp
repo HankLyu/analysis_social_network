@@ -30,8 +30,8 @@ struct social{
 };
 
 social user[maxx];
-double seed_run[initnum][all_round];	//to record progation for each seed
-double best_run[all_round];
+double seed_run[initnum][initnum*20];	//to record progation for each seed
+double best_run[initnum*20];
 int exist[maxx];
 int curseed;	//to record which seed is the current seed running for greedy to use the seed_run 
 int nummax;		//nummax to record the max id
@@ -49,7 +49,7 @@ int main(int argc,char* argv[]){
 	double c;
 	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[all_round]={0},sum=0;
+	double influenced_num_round[initnum*20]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -153,7 +153,7 @@ void choice_seed(int by_choice[], int num, int seed[]){
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
-	int times_result_num[all_round]={0};
+	int times_result_num[initnum*20]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -214,7 +214,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0;times_result_num[i]!=0 || i<put_time[seednum];i++){		//caulate the average of each round
+	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
 }

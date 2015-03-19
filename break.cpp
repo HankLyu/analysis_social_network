@@ -209,7 +209,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0;times_result_num[i]!=0 || i<put_time[seednum];i++){		//caulate the average of each round
+	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
 }

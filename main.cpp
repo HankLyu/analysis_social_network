@@ -6,7 +6,7 @@
 #include <queue>
 #include <algorithm>
 
-#define maxx 90000
+#define maxx 200000
 #define runtimes 1000
 #define initnum 12
 #define random_choice_thres 500
@@ -67,13 +67,13 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	//random_choice_seed(seed);
+	random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
 	//int by_choice[]={4841, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
 	int by_choice[]={15026, 50290, 10423, 7489, 35723, 20862, 19650, 9289, 12843, 10143, 43917, 15380};
-	choice_seed(by_choice, initnum, seed);
+	//choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
 	printf("\n");
@@ -248,7 +248,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0; times_result_num[i]> 0.0; i++){		//caulate the average of each round
+	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 		//printf("influenced_num_round %d %lf\n", i, influenced_num_round[i]);
 	}
