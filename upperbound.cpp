@@ -7,12 +7,11 @@
 #include <algorithm>
 #include <stdint.h>
 
-#define maxx 90000
+#define maxx 200000
 #define runtimes 10000
 #define initnum 12
 #define thres1 100
 #define thres2 50
-#define all_round 120
 
 using namespace std;
 
@@ -76,7 +75,7 @@ int main(int argc,char* argv[]){
 	//9881, 30635, 8932
 
 	//int by_choice[]={2813, 9982, 7052, 248, 19777, 5920};
-	int by_choice[]={32181, 11632, 26537, 46892, 20428, 7815, 1917, 35762, 4024, 22840, 28927, 26207};
+	int by_choice[]={69808, 54403, 7587, 42407, 9310, 22150, 860, 74533, 10004, 4872, 55929, 55791};
 	//int by_choice[]={28977, 5699, 16738, 14133, 19406, 40602};
 	choice_seed(by_choice, initnum, seed);
 
@@ -225,17 +224,17 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			put_time[0]=0;
 			printf("choose first seed: %d\n", seed[0]);
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
-			memcpy(seed_run[i], influenced_num_round, sizeof(int)*all_round);
+			memcpy(seed_run[i], influenced_num_round, sizeof(int)*initnum*20);
 			continue;
 		}
 		int max_num_round=0, best_put_time=0;
 		int tmp_num_round;
 		int upperbound;
-		double estimate[100];
+		double estimate[initnum*20];
 		printf("i=%d\n",i);
-		for(int j=put_time[i-1]+1; j < put_time[i-1]+20; j++){
+		for(int j=put_time[i-1]+1; j < put_time[i-1]+30; j++){
 			tmp_num_round=0;
-			memcpy(estimate, influenced_num_round, sizeof(int)*all_round);
+			memcpy(estimate, influenced_num_round, sizeof(int)*initnum*20);
 			for(int k=0; seed_run[curseed][k] > 0.0 ;k++){
 				estimate[j+k]+=seed_run[curseed][k];
 			}
