@@ -251,8 +251,10 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 				}
 			}	
 		}
-		if(last_round_under_thres <= put_time[i-1]+1) printf("wwwwwwwwwwwwwwwwwwwwwwww %d %d\n", last_round_under_thres, put_time[i-1]+1);
-
+		if(last_round_under_thres <= put_time[i-1]+1){
+			last_round_under_thres = put_time[i-1]+15;
+			printf("wwwwwwwwwwwwwwwwwwwwwwww %d %d\n", last_round_under_thres, put_time[i-1]+1);
+		} 
 		printf("i=%d\n",i);
 		for(int j=put_time[i-1]+1; j<last_round_under_thres;j++){
 			put_time[i]=j;
