@@ -238,21 +238,20 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 		int max_num_round=0, best_put_time=0, max_thres=0;
 		int tmp_num_round;
 
-        // last_node_infl algorithm core
-        int last_round_under_thres;
-        run_result(seed, put_time, influenced_num_round, seed_be_effected, i);
-        bool upto_thres=false;
-        for(int j=put_time[i-1]+1;influenced_num_round[j] != 0; j++){
-            if(influenced_num_round[j] > thres1)	upto_thres=true;
-            if(upto_thres){
-            	if(influenced_num_round[j] < thres1){
-            		last_round_under_thres = j-1;
-            		break;
-            	}
-            }
-            
-        	
-        }
+		// last_node_infl algorithm core
+		int last_round_under_thres;
+		run_result(seed, put_time, influenced_num_round, seed_be_effected, i);
+		bool upto_thres=false;
+		for(int j=put_time[i-1]+1;influenced_num_round[j] != 0; j++){
+			if(influenced_num_round[j] > thres1)	upto_thres=true;
+			if(upto_thres){
+				if(influenced_num_round[j] < thres1-10){
+					last_round_under_thres = j;
+					break;
+				}
+			}	
+		}
+		if(last_round_under_thres <= put_time[i-1]+1) printf("wwwwwwwwwwwwwwwwwwwwwwww %d %d\n", last_round_under_thres, put_time[i-1]+1);
 
 		printf("i=%d\n",i);
 		for(int j=put_time[i-1]+1; j<last_round_under_thres;j++){
