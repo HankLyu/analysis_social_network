@@ -6,9 +6,9 @@
 #include <queue>
 #include <algorithm>
 
-#define maxx 90000
-#define runtimes 10000
-#define initnum 12
+#define maxx 200000
+#define runtimes 1000
+#define initnum 30
 #define thres1 100
 #define thres2 50
 
@@ -70,7 +70,7 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	int by_choice[]={32181, 11632, 26537, 46892, 20428, 7815, 1917, 35762, 4024, 22840, 28927, 26207};
+	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
 	//int by_choice[]={7781, 14625, 6751, 26970, 14014, 10464};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)

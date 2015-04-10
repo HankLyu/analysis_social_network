@@ -8,7 +8,7 @@
 
 #define maxx 200000
 #define runtimes 1000
-#define initnum 12
+#define initnum 30
 #define random_choice_thres 500
 #define thres1 100
 #define thres2 50
@@ -72,7 +72,7 @@ int main(int argc,char* argv[]){
 	//9881, 30635, 8932
 
 	//int by_choice[]={4841, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
-	int by_choice[]={69808, 54403, 7587, 42407, 9310, 22150, 860, 74533, 10004, 4872, 55929, 55791};
+	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
