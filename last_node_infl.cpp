@@ -242,7 +242,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 		int last_round_under_thres;
 		run_result(seed, put_time, influenced_num_round, seed_be_effected, i);
 		bool upto_thres=false;
-		for(int j=put_time[i-1]+1;influenced_num_round[j] != 0; j++){
+		for(int j=put_time[i-1];influenced_num_round[j] != 0; j++){
 			if(influenced_num_round[j] > thres1)	upto_thres=true;
 			if(upto_thres){
 				if(influenced_num_round[j] < thres1-10){

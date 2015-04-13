@@ -261,10 +261,10 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			continue;
 		}
-		int max_num_round=0, best_put_time=0, max_thres=0;
+		int max_num_round=0, best_put_time=put_time[i-1], max_thres=0;
 		int tmp_num_round;
 		printf("i=%d\n",i);
-		for(int j=put_time[i-1]+1; j<put_time[i-1]+15;j++){
+		for(int j=put_time[i-1]; j<put_time[i-1]+15;j++){
 			put_time[i]=j;
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			tmp_num_round=0;

@@ -231,7 +231,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 		int upperbound;
 		double estimate[initnum*20];
 		printf("i=%d\n",i);
-		for(int j=put_time[i-1]+1; j < put_time[i-1]+30; j++){
+		for(int j=put_time[i-1]; j < put_time[i-1]+30; j++){
 			tmp_num_round=0;
 			memcpy(estimate, influenced_num_round, sizeof(int)*initnum*20);
 			for(int k=0; seed_run[curseed][k] > 0.0 ;k++){
@@ -250,7 +250,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 		}
 		max_num_round=0;
 		printf("upperbound = %d\n", upperbound);
-		for(int j=put_time[i-1]+1; j<=upperbound;j++){
+		for(int j=put_time[i-1]; j<=upperbound;j++){
 			put_time[i]=j;
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
 			tmp_num_round=0;
