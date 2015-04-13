@@ -74,16 +74,15 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	//int by_choice[]={2813, 9982, 7052, 248, 19777, 5920};
+	//int by_choice[]={31626, 12501, 1621, 35460, 29204, 4841};
 	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
-	//int by_choice[]={28977, 5699, 16738, 14133, 19406, 40602};
 	choice_seed(by_choice, initnum, seed);
 
 	int seed_be_effected[initnum+5]={0};		//count it is active node but it have been effected times
-	int put_time[initnum+5];	//the round should be put
+	int put_time[initnum+5]={0, 10, 10, 10, 10, 10};	//the round should be put
 	
 	start_time = time(NULL);
-	greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
+	//greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	memset(seed_be_effected,0,sizeof(seed_be_effected));
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	finish_time = time(NULL);
@@ -109,7 +108,7 @@ int main(int argc,char* argv[]){
 		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
 	fprintf(out, "\n");
 	bool upto_thres=false;
-	for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
+	for(int k=0;influenced_num_round[k]> 1e-7; k++){		//caulate the average of each round
 		if(influenced_num_round[k] > thres1)	upto_thres=true;
 		if(upto_thres){
 			//printf("tmp_num_round %d\n", tmp_num_round);
@@ -117,14 +116,14 @@ int main(int argc,char* argv[]){
 			else break;
 		}
 	}
-	for(int i=0;influenced_num_round[i]> 0.0;i++){		//caulate the average of each round
+	for(int i=0;influenced_num_round[i]> 1e-7;i++){		//caulate the average of each round
 		sum+=influenced_num_round[i];
 		if(influenced_num_round[i]>thres2)	thres2_up++;
 	}
 	fprintf(out,"%4d up:\t%3d\n%4d up:\t%3d\n",thres1,thres1_up,thres2,thres2_up);
 	fprintf(out,"the average num: \n%.3lf\n",sum);
 	fprintf(out,"average round\n");
-	for(int i=0;influenced_num_round[i]!=0;i++)
+	for(int i=0;influenced_num_round[i]> 1e-7;i++)
 		fprintf(out,"%.3lf\n",influenced_num_round[i]);
 	
 	fclose(read_edge);
@@ -227,7 +226,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			memcpy(seed_run[i], influenced_num_round, sizeof(int)*initnum*20);
 			continue;
 		}
-		int max_num_round=0, best_put_time=0;
+		int max_num_round=0, best_put_time=put_time[i-1];
 		int tmp_num_round;
 		int upperbound;
 		double estimate[initnum*20];
