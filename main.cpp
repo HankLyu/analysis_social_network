@@ -12,6 +12,7 @@
 #define random_choice_thres 500
 #define thres1 100
 #define thres2 50
+#define err 3
 
 using namespace std;
 
@@ -271,7 +272,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 				if(influenced_num_round[k] > thres1)	upto_thres=true;
 				if(upto_thres){
 					//printf("tmp_num_round %d\n", tmp_num_round);
-					if(influenced_num_round[k]>thres1)	tmp_num_round++;
+					if(influenced_num_round[k]>thres1 + err)	tmp_num_round++;
 					else break;
 				}
 			}

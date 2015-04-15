@@ -12,6 +12,7 @@
 #define initnum 30
 #define thres1 100
 #define thres2 50
+#define err 3
 
 using namespace std;
 
@@ -82,7 +83,7 @@ int main(int argc,char* argv[]){
 	int put_time[initnum+5]={0, 10, 10, 10, 10, 10};	//the round should be put
 	
 	start_time = time(NULL);
-	//greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
+	greedy(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	memset(seed_be_effected,0,sizeof(seed_be_effected));
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, initnum);
 	finish_time = time(NULL);
@@ -256,12 +257,11 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 			tmp_num_round=0;
 			bool upto_thres=false;
 			for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
-				if(influenced_num_round[k] > thres1){
-					upto_thres=true;
-					tmp_num_round++;
-				}		
-				if(upto_thres && influenced_num_round[k]<thres1){
-					break;
+				if(influenced_num_round[k] > thres1)	upto_thres=true;
+				if(upto_thres){
+					//printf("tmp_num_round %d\n", tmp_num_round);
+					if(influenced_num_round[k]>thres1 + err)	tmp_num_round++;
+					else break;
 				}
 			}
 			if(max_num_round < tmp_num_round){		//check whether this put time have better progation
