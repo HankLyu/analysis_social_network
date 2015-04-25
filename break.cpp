@@ -9,7 +9,7 @@
 
 #define maxx 200000
 #define runtimes 1000
-#define initnum 30
+#define initnum 15
 #define thres1 100
 #define thres2 50
 #define err 3
@@ -71,12 +71,12 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	//int by_choice[]={31626, 12501, 1621, 35460, 29204, 4841};
+	//int by_choice[]={32049, 12501, 1621, 35460, 29204, 4841};
 	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
 	choice_seed(by_choice, initnum, seed);
 
 	int seed_be_effected[initnum+5]={0};		//count it is active node but it have been effected times
-	int put_time[initnum+5]={0, 10, 10, 10, 10, 10};	//the round should be put
+	int put_time[initnum+5]={0, 15, 15, 15, 15, 15};	//the round should be put
 	
 	start_time = time(NULL);
 	int init[5];
@@ -244,7 +244,6 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 				memcpy(best_influenced_num_round, influenced_num_round, sizeof(best_influenced_num_round));
 			}
 			if(max_num_round > tmp_num_round){
-				printf("doooo\n");
 				break;
 			}
 		}//for(int j=put_time[i]+1; j<put_time[i]+15;j++)
@@ -272,6 +271,7 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 		int peak;	//to find the peak of each seed
 		int bestseed_thisround=-1;	//to record which seed is best in this round
 		
+		memset(seed_effect, 0, sizeof(seed_effect));
 		for(int i=0; i<seednum; i++){ //to 
 			peak=0;
 			if(be_put[i] == 1)	continue;
@@ -287,7 +287,6 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 				}
 				peak=max(peak, (int)influenced_num_round[j]);
 			}
-			printf(" peak: %d\n", peak);
 			bool upto_thres=false;
 			for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
 				if(influenced_num_round[k] > thres1)	upto_thres=true;
@@ -295,6 +294,7 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 					if(influenced_num_round[k]>thres1)	seed_effect[i]++;
 					else break;
 				}
+				//printf("%d: %.1lf\n", i, influenced_num_round[k]);
 			}
 			//printf("seed %d max over %d\n", seed[i], peak);
 			if(peak < min_overthres && peak>thres1
@@ -304,7 +304,7 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 				best_put_time=put_time[curnum];
 				memcpy(best_influenced_num_round, influenced_num_round, sizeof(best_influenced_num_round));
 			}
-			else if(bestseed_thisround == -1 || min_overthres<thres1){
+			/*else if(bestseed_thisround == -1 || min_overthres<thres1){
 				if(min_overthres==1e5){
 					min_overthres=peak;
 					bestseed_thisround = i;
@@ -315,7 +315,9 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 					bestseed_thisround = i;
 					best_put_time = put_time[curnum];
 				}
-			}
+			}*/
+			printf("the current best seed is: %d  peak: %d last_effect: %d, this seed effected %d\n"
+				, seed[bestseed_thisround], peak, last_effect, seed_effect[i]);
 		}//for(int i=0; i<seednum; i++)
 		if(bestseed_thisround == -1){
 			printf("no proper seed!!!!!\n");
