@@ -6,9 +6,9 @@
 #include <queue>
 #include <algorithm>
 
-#define maxx 90000
+#define maxx 200000
 #define runtimes 1000
-#define initnum 6
+#define initnum 20
 #define thres1 100
 #define thres2 50
 #define err 3
@@ -71,7 +71,7 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	int by_choice[]={16751, 14014, 10464, 26970, 7781, 14625};
+	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
 	//int by_choice[]={14613, 25069, 42384, 9620, 5657, 7037};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
@@ -255,6 +255,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 }
 
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum){
+	int record_num=0;	//to make sure eac
 	for(int i=startnum; i<seednum; i++){
 		if(i == 0){
 			put_time[0]=0;
@@ -284,6 +285,10 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 				best_put_time = j;
 			}
 		}//for(int j=put_time[i]+1; j<put_time[i]+15;j++)
+		if(max_num_round < record_num + 2)
+			best_put_time = put_time[i-1];
+		else	
+			record_num = max_num_round;
 		put_time[i]=best_put_time;
 		printf("this seed %d: best_put_time is %d, round: %d\n", seed[i], put_time[i], max_num_round);
 	}//for(int i=1; i<seednum; i++)
