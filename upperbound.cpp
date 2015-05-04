@@ -9,7 +9,7 @@
 
 #define maxx 200000
 #define runtimes 1000
-#define initnum 30
+#define initnum 15
 #define thres1 100
 #define thres2 50
 #define err 3
@@ -55,7 +55,7 @@ int main(int argc,char* argv[]){
 
 	nummax=0;	//nummax to record the max id
 	read_edge=fopen(argv[1],"r");
-	out=fopen("Upperbound_put.txt","w");
+	out=fopen("upperbound_put.txt","w");
 	memset(user,0,sizeof(user));
 	friending inputfriend;
 
@@ -101,12 +101,12 @@ int main(int argc,char* argv[]){
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%4d\t%4d\t%.3lf\n",seed[i],user[seed[i]].friends.size()
 				,(double)user[seed[i]].expect);
-	fprintf(out,"put round\n");
+	fprintf(out,"the order of seeds\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d\t",put_time[i]);
-	fprintf(out,"\ninit node be influeced before active times\n");
+		fprintf(out,"%4d, ", seed[i]);
+	fprintf(out,"\nput round\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
+		fprintf(out,"%3d, ",put_time[i]);
 	fprintf(out, "\n");
 	bool upto_thres=false;
 	for(int k=0;influenced_num_round[k]> 1e-7; k++){		//caulate the average of each round

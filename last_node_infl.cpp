@@ -96,16 +96,16 @@ int main(int argc,char* argv[]){
 	//for(int i=0;i<initnum;i++)
 	//	printf("%4d\n",seed[i]);
 	int thres1_up=0, thres2_up=0;
-	fprintf(out,"Greedy:\nThe initial node and its num of friends\n");
+	fprintf(out,"Last:\nThe initial node and its num of friends\n");
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%4d\t%4d\t%.3lf\n",seed[i],user[seed[i]].friends.size()
 				,(double)user[seed[i]].expect);
-	fprintf(out,"put round\n");
+	fprintf(out,"the order of seeds\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d\t",put_time[i]);
-	fprintf(out,"\ninit node be influeced before active times\n");
+		fprintf(out,"%4d, ", seed[i]);
+	fprintf(out,"\nput round\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
+		fprintf(out,"%3d, ",put_time[i]);
 	fprintf(out, "\n");
 	bool upto_thres=false;
 	for(int k=0;influenced_num_round[k]> 1e-7; k++){		//caulate the average of each round

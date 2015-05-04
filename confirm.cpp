@@ -8,7 +8,7 @@
 
 #define maxx 200000
 #define runtimes 10000
-#define initnum 30
+#define initnum 1
 #define random_choice_thres 500
 #define thres1 100
 #define thres2 50
@@ -71,9 +71,10 @@ int main(int argc,char* argv[]){
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
-	//int by_choice[]={4841, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
-	int by_choice[]={36248, 83423, 32049, 9330, 42945, 43689, 47217, 54685, 47163, 13153, 42988, 3776, 35839, 688, 37251, 35923, 14580, 23577, 19703, 101694, 30497, 79318, 20277, 45865, 26589, 23784, 58658, 6340, 51697, 45678};
-	int put_time[initnum+5]={0, 1, 5, 11, 13, 16, 20, 25, 30, 32, 33, 35, 36, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55};	//the round should be put
+	int by_choice[]={32049, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
+	//int by_choice[]={36248, 83423, 32049, 9330, 42945, 43689, 47217, 54685, 47163, 13153, 42988, 3776, 35839, 688, 37251, 35923, 14580, 23577, 19703, 101694, 30497, 79318, 20277, 45865, 26589, 23784, 58658, 6340, 51697, 45678};
+	//int put_time[initnum+5]={0, 1, 5, 11, 13, 16, 20, 25, 30, 32, 33, 35, 36, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55};	//the round should be put
+	int put_time[2]={0,1};
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
@@ -97,12 +98,12 @@ int main(int argc,char* argv[]){
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%4d\t%4d\t%.3lf\n",seed[i],user[seed[i]].friends.size()
 				,(double)user[seed[i]].expect);
-	fprintf(out,"put round\n");
+	fprintf(out,"the order of seeds\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d\t",put_time[i]);
-	fprintf(out,"\ninit node be influeced before active times\n");
+		fprintf(out,"%4d, ", seed[i]);
+	fprintf(out,"\nput round\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
+		fprintf(out,"%3d, ",put_time[i]);
 	fprintf(out, "\n");
 	bool upto_thres=false;
 	for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round

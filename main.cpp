@@ -8,7 +8,7 @@
 
 #define maxx 200000
 #define runtimes 1000
-#define initnum 12
+#define initnum 20
 #define random_choice_thres 500
 #define thres1 100
 #define thres2 50
@@ -100,12 +100,12 @@ int main(int argc,char* argv[]){
 	for(int i=0;i<initnum;i++)
 		fprintf(out,"%4d\t%4d\t%.3lf\n",seed[i],user[seed[i]].friends.size()
 				,(double)user[seed[i]].expect);
-	fprintf(out,"put round\n");
+	fprintf(out,"the order of seeds\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%3d\t",put_time[i]);
-	fprintf(out,"\ninit node be influeced before active times\n");
+		fprintf(out,"%4d, ", seed[i]);
+	fprintf(out,"\nput round\n");
 	for(int i=0;i<initnum;i++)
-		fprintf(out,"%.3lf\t", (double)seed_be_effected[i]/(double)runtimes);
+		fprintf(out,"%3d, ",put_time[i]);
 	fprintf(out, "\n");
 	bool upto_thres=false;
 	for(int k=0;influenced_num_round[k]> 0.0; k++){		//caulate the average of each round
