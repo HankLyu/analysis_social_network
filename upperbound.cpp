@@ -9,6 +9,7 @@
 
 #define maxx 200000
 #define runtimes 1000
+#define round_max 100
 #define initnum 15
 #define thres1 100
 #define thres2 50
@@ -30,8 +31,8 @@ struct social{
 };
 
 social user[maxx];
-double seed_run[initnum][initnum*20];	//to record progation for each seed
-double best_run[initnum*20];
+double seed_run[initnum][round_max];	//to record progation for each seed
+double best_run[round_max];
 int exist[maxx];
 int curseed;	//to record which seed is the current seed running for greedy to use the seed_run 
 int nummax;		//nummax to record the max id
@@ -49,7 +50,7 @@ int main(int argc,char* argv[]){
 	double c;
 	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[initnum*20]={0},sum=0;
+	double influenced_num_round[round_max]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -152,7 +153,7 @@ void choice_seed(int by_choice[], int num, int seed[]){
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
-	int times_result_num[initnum*20]={0};
+	int times_result_num[round_max]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -213,7 +214,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
+	for(int i=0; i<round_max; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
 }
@@ -221,22 +222,22 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum){
 	
 	for(int i=startnum; i<seednum; i++){
-		double best_influenced_num_round[initnum*20];
+		double best_influenced_num_round[round_max];
 		if(i == 0){
 			put_time[0]=0;
 			printf("choose first seed: %d\n", seed[0]);
 			run_result(seed, put_time, influenced_num_round, seed_be_effected, i+1);
-			memcpy(seed_run[i], influenced_num_round, sizeof(int)*initnum*20);
+			memcpy(seed_run[i], influenced_num_round, sizeof(int)*round_max);
 			continue;
 		}
 		int max_num_round=0, best_put_time=put_time[i-1];
 		int tmp_num_round;
 		int upperbound;
-		double estimate[initnum*20];
+		double estimate[round_max];
 		printf("i=%d\n",i);
 		for(int j=put_time[i-1]; j < put_time[i-1]+30; j++){
 			tmp_num_round=0;
-			memcpy(estimate, influenced_num_round, sizeof(int)*initnum*20);
+			memcpy(estimate, influenced_num_round, sizeof(int)*round_max);
 			for(int k=0; seed_run[curseed][k] > 0.0 ;k++){
 				estimate[j+k]+=seed_run[curseed][k];
 			}
@@ -284,7 +285,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	int curnum=0, be_put[initnum]={0};
 	int last_effect=0, seed_effect[initnum]={0};
-	double best_influenced_num_round[initnum*20];
+	double best_influenced_num_round[round_max];
 		//last_effect is to record how many rounds are over thres
 		//seed_effect is to record how many rounds are over thres to check whether this seed have enough influence
 	int best_put_order[initnum], begin_round=0, tmp_begin_round;

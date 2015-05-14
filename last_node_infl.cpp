@@ -8,6 +8,7 @@
 
 #define maxx 200000
 #define runtimes 1000
+#define round_max 100
 #define initnum 15
 #define thres1 100
 #define thres2 50
@@ -45,7 +46,7 @@ int main(int argc,char* argv[]){
 	double c;
 	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[initnum*20]={0},sum=0;
+	double influenced_num_round[round_max]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -151,7 +152,7 @@ void choice_seed(int by_choice[], int num, int seed[]){
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round
-	int times_result_num[initnum*20]={0};
+	int times_result_num[round_max]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -212,13 +213,13 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
+	for(int i=0; i<round_max; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 	}
 }
 
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum){
-	double best_influenced_num_round[initnum*20];
+	double best_influenced_num_round[round_max];
 	for(int i=startnum; i<seednum; i++){
 		if(i == 0){
 			put_time[0]=0;
@@ -276,7 +277,7 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	int curnum=0, be_put[initnum]={0};
 	int last_effect=0, seed_effect[initnum]={0};
-	double best_influenced_num_round[initnum*20];
+	double best_influenced_num_round[round_max];
 		//last_effect is to record how many rounds are over thres
 		//seed_effect is to record how many rounds are over thres to check whether this seed have enough influence
 	int best_put_order[initnum], begin_round=0, tmp_begin_round;

@@ -10,6 +10,7 @@
 #define runtimes 1000
 #define initnum 20
 #define random_choice_thres 500
+#define round_max 100
 #define thres1 100
 #define thres2 50
 #define err 3
@@ -68,13 +69,13 @@ int main(int argc,char* argv[]){
 	srand(time(NULL));
 	nummax++;	//it is convience for for_loop
 
-	//random_choice_seed(seed);
+	random_choice_seed(seed);
 	//friend_choice_seed();
 	//9881, 30635, 8932
 
 	//int by_choice[]={31626, 12501, 1621, 35460, 29204, 4841};
-	int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
-	choice_seed(by_choice, initnum, seed);
+	//int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
+	//choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
 	printf("\n");

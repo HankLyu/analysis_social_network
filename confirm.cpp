@@ -7,9 +7,10 @@
 #include <algorithm>
 
 #define maxx 200000
-#define runtimes 10000
+#define runtimes 1000
 #define initnum 1
 #define random_choice_thres 500
+#define round_max 100
 #define thres1 100
 #define thres2 50
 
@@ -45,7 +46,7 @@ int main(int argc,char* argv[]){
 	double c;
 	int seed[initnum+5];
 	int influence_times[maxx];
-	double influenced_num_round[initnum*20]={0},sum=0;
+	double influenced_num_round[round_max]={0},sum=0;
 	FILE *read_edge,*out;
 	time_t start_time, finish_time;
 
@@ -74,7 +75,7 @@ int main(int argc,char* argv[]){
 	int by_choice[]={32049, 31626, 12501, 1621, 35460, 29204, 36872, 42255, 408, 19741, 15330, 39146};
 	//int by_choice[]={36248, 83423, 32049, 9330, 42945, 43689, 47217, 54685, 47163, 13153, 42988, 3776, 35839, 688, 37251, 35923, 14580, 23577, 19703, 101694, 30497, 79318, 20277, 45865, 26589, 23784, 58658, 6340, 51697, 45678};
 	//int put_time[initnum+5]={0, 1, 5, 11, 13, 16, 20, 25, 30, 32, 33, 35, 36, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55};	//the round should be put
-	int put_time[2]={0,1};
+	int put_time[initnum+5];
 	choice_seed(by_choice, initnum, seed);
 	for(int i=0;i<initnum;i++)
 		printf("%d ",seed[i]);
@@ -160,7 +161,7 @@ void choice_seed(int by_choice[], int num, int seed[]){
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum){
 	bool put_activenode[initnum+5]={0};	//to put active node for the some round
 	int next_seed;						//next_seed record the  which round is next round 	
-	int times_result_num[initnum*20]={0};
+	int times_result_num[round_max]={0};
 	queue<int>infl;		//to do bfs
 	//The follow is run the experence
 	//it is round (runtimes) times to record the sum of each experence result
@@ -221,7 +222,7 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			}
 		}//while(!infl.empty())
 	}//for(runtimes)
-	for(int i=0; i<initnum*20; i++){		//caulate the average of each round
+	for(int i=0; i<round_max; i++){		//caulate the average of each round
 		influenced_num_round[i] = times_result_num[i]/(double)runtimes;
 		//printf("influenced_num_round %d %lf\n", i, influenced_num_round[i]);
 	}
