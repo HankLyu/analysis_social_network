@@ -91,6 +91,23 @@ g++ -o a user.cpp
 
 output: outputfile
 
+##Some Variable in cpp mean:
+maxx ->It is the size of struct array used to save our node.
+
+runtimes -> We use it to simulate that the node influences in network.
+
+initnum -> It mean the number of seeds.
+
+random_choice_thres -> We use it as a standard to choice some seeds which have some power of influence by random choose.
+
+round_max -> It is the size of the array used to record the number of influenced nodes for each round.
+
+thres1 -> The thresholds used to check whether these seeds influence one time of these round with the power.
+
+thres2 -> It is not used now.
+
+err -> To make sure the influence ability with no lucky random.
+
 ## forExcel.py for draw picture in Excel
 
 Install requirements.txt
