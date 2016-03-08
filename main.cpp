@@ -6,16 +6,13 @@
 #include <queue>
 #include <algorithm>
 
-#define round_max 100
-#define errOfBasicInfluenceNumber 3
-
 using namespace std;
 
 const int peopleSize = 200000;
-const int seedsNumber = 20;
+const int seedsNumber = 5;
 const int simulateTimes = 1000;
-const int basicAbilityOfrSeed = 500;
-const int basicInfluenceNumber = 100;
+const int basicAbilityOfrSeed = 100;
+const int basicInfluenceNumber = 60;
 const int maxRound = 100;
 const int errOfBasicInfluenceNumberOfBasicInfluenceNumber = 3;
 
@@ -106,12 +103,12 @@ int maxId; //maxId to record the max id
 
 double take_random();
 bool is_all_init_put(int seed[], int seednum);
-void random_choice_seed(int seed[]);
+void choiceSeedByRandom(int seed[]);
 void choice_seed(int by_choice[], int num, int seed[]);
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum);
 void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
-void readFileAndBuildFrendRelation(FILE &edgeFile);
+void readFileAndBuildFrendRelation(FILE *edgeFile);
 
 int main(int argc, char* argv[]) {
 	int a, b;
@@ -119,30 +116,20 @@ int main(int argc, char* argv[]) {
 	int seed[seedsNumber];
 	int influence_times[peopleSize];
 	double influenced_num_round[seedsNumber * 20] = {0}, sum = 0;
-	FILE *edgeFile, *out;
+	FILE *edgeFile, *outputFile;
 	time_t start_time, finish_time;
 
 	edgeFile = fopen(argv[1], "r");
-	out = fopen("greedy_put.txt", "w");
+	outputFile = fopen("greedy_put.txt", "w");
 	memset(user, 0, sizeof (user));
-	
-	readFileAndBuildFrendRelation(*edgeFile);
-	
+
+	readFileAndBuildFrendRelation(edgeFile);
+
 	srand(time(NULL));
 
-	random_choice_seed(seed);
-	//friend_choice_seed();
-	//9881, 30635, 8932
-
-	//int by_choice[]={31626, 12501, 1621, 35460, 29204, 4841};
-	//int by_choice[]={35839, 42945, 36248, 19703, 20277, 688, 14580, 79318, 13153, 3776, 58658, 43689, 23784, 6340, 47163, 42988, 45865, 9330, 83423, 54685, 35923, 37251, 23577, 51697, 101694, 30497, 45678, 47217, 26589, 32049};
-	//choice_seed(by_choice, seedsNumber, seed);
-	for (int i = 0; i < seedsNumber; i++)
-		printf("%d ", seed[i]);
-	printf("\n");
-
-	int seed_be_effected[seedsNumber + 5] = {0}; //count it is active node but it have been effected times
-	int put_time[seedsNumber + 5] = {0, 10, 10, 10, 10, 10}; //the round should be put
+	choiceSeedByRandom(seed);
+	int seed_be_effected[seedsNumber] = {0}; //count it is active node but it have been effected times
+	int put_time[seedsNumber] = {0}; //the round should be put
 
 	start_time = time(NULL);
 	greedy(seed, put_time, influenced_num_round, seed_be_effected, seedsNumber);
@@ -151,24 +138,24 @@ int main(int argc, char* argv[]) {
 	finish_time = time(NULL);
 	std::cout << "start time " << start_time << endl << "end time " << finish_time << endl;
 	std::cout << "the greedy time is " << (finish_time - start_time) << endl;
-	fprintf(out, "The greedy run time is %ld\n", (finish_time - start_time));
+	fprintf(outputFile, "The greedy run time is %ld\n", (finish_time - start_time));
 	memset(seed_be_effected, 0, sizeof (seed_be_effected));
 	//print the result
 	//printf("init node:\n");
 	//for(int i=0;i<seedsNumber;i++)
 	//	printf("%4d\n",seed[i]);
 	int basicInfluenceNumber_up = 0, thres2_up = 0;
-	fprintf(out, "Greedy:\nThe initial node and its num of friends\n");
+	fprintf(outputFile, "Greedy:\nThe initial node and its num of friends\n");
 	for (int i = 0; i < seedsNumber; i++)
-		fprintf(out, "%4d\t%4lu\t%.3lf\n", seed[i], user[seed[i]].friends.size()
+		fprintf(outputFile, "%4d\t%4lu\t%.3lf\n", seed[i], user[seed[i]].friends.size()
 		, (double) user[seed[i]].expect);
-	fprintf(out, "the order of seeds\n");
+	fprintf(outputFile, "the order of seeds\n");
 	for (int i = 0; i < seedsNumber; i++)
-		fprintf(out, "%4d, ", seed[i]);
-	fprintf(out, "\nput round\n");
+		fprintf(outputFile, "%4d, ", seed[i]);
+	fprintf(outputFile, "\nput round\n");
 	for (int i = 0; i < seedsNumber; i++)
-		fprintf(out, "%3d, ", put_time[i]);
-	fprintf(out, "\n");
+		fprintf(outputFile, "%3d, ", put_time[i]);
+	fprintf(outputFile, "\n");
 	bool upto_thres = false;
 	for (int k = 0; influenced_num_round[k] > 0.0; k++) { //caulate the average of each round
 		if (influenced_num_round[k] > basicInfluenceNumber) upto_thres = true;
@@ -181,19 +168,20 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; influenced_num_round[i] > 0.0; i++) { //caulate the average of each round
 		sum += influenced_num_round[i];
 	}
-	fprintf(out, "%4d up:\t%3d\n", basicInfluenceNumber, basicInfluenceNumber_up);
-	fprintf(out, "the average num: \n%.3lf\n", sum);
-	fprintf(out, "average round\n");
+	fprintf(outputFile, "%4d up:\t%3d\n", basicInfluenceNumber, basicInfluenceNumber_up);
+	fprintf(outputFile, "the average num: \n%.3lf\n", sum);
+	fprintf(outputFile, "average round\n");
 	for (int i = 0; influenced_num_round[i] > 1e-7; i++)
-		fprintf(out, "%.3lf\n", influenced_num_round[i]);
+		fprintf(outputFile, "%.3lf\n", influenced_num_round[i]);
 
 	fclose(edgeFile);
-	fclose(out);
+	fclose(outputFile);
 	return 0;
 }
 
-void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum) {
-	int curnum = 0, be_put[seedsNumber] = {0};
+void greedy(int seed[], int putTimeOfSeed[], double influenced_num_round[],
+	int seedBeEffectedBeforePut[], int numOfSeed) {
+	int nthSeed = 0, be_put[seedsNumber] = {0};
 	int last_effect = 0, seed_effect[seedsNumber] = {0};
 	double best_influenced_num_round[seedsNumber * 20];
 	//last_effect is to record how many rounds are over thres
@@ -201,23 +189,23 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 	int best_put_order[seedsNumber], begin_round = 0, tmp_begin_round;
 	//begin_round is to record the round of peak.
 	int best_put_time; //record the time of the current seed
-	for (int i = 0; i < curnum; i++) { //if the order of the part seeds is sure, change the "curnum" valure 
+	for (int i = 0; i < nthSeed; i++) { //if the order of the part seeds is sure, change the "nthSeed" valure 
 		be_put[i] = 1;
 		best_put_order[i] = seed[i];
 	}
-	while (curnum < seednum) {
+	while (nthSeed < numOfSeed) {
 		bool have_influence = false;
 		int min_overthres = 1e5; //to find the  best seed having the min peak for this order to make sure the wave is not too high
 		int peak; //to find the peak of each seed
 		int bestseed_thisround = -1; //to record which seed is best in this round
 
 		memset(seed_effect, 0, sizeof (seed_effect));
-		for (int i = 0; i < seednum; i++) { //to 
+		for (int i = 0; i < numOfSeed; i++) { //to 
 			peak = 0;
 			if (be_put[i] == 1) continue;
 
-			best_put_order[curnum] = seed[i];
-			run_puttime(best_put_order, put_time, influenced_num_round, seed_be_effected, curnum + 1, curnum);
+			best_put_order[nthSeed] = seed[i];
+			run_puttime(best_put_order, putTimeOfSeed, influenced_num_round, seedBeEffectedBeforePut, nthSeed + 1, nthSeed);
 			tmp_begin_round = begin_round;
 			//chose the peak
 			for (int j = tmp_begin_round; j < tmp_begin_round + 35; j++) { //check the influencu wave
@@ -237,7 +225,7 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 				&& seed_effect[i] > last_effect + 1) { //check whether the current seed is good
 				min_overthres = peak; //to sure the new seed just over the threshold a bit
 				bestseed_thisround = i;
-				best_put_time = put_time[curnum];
+				best_put_time = putTimeOfSeed[nthSeed];
 				have_influence = true;
 				memcpy(best_influenced_num_round, influenced_num_round, sizeof (best_influenced_num_round));
 			}
@@ -250,7 +238,7 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 				if (be_put[i] == 0) {
 					be_put[i] = 1;
 					bestseed_thisround = i;
-					best_put_time = put_time[curnum - 1];
+					best_put_time = putTimeOfSeed[nthSeed - 1];
 					break;
 				}
 			have_influence = false;
@@ -264,37 +252,30 @@ void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_
 			}
 		}
 		printf("begin_round is %d\n peak is : %.3lf", begin_round, new_peak);
-		/*
-		//the new peak is more previous than the put time of the current seed
-		//it mean even the best seed doesn't have the good influence
-		if(begin_round < best_put_time){
-			best_put_time = put_time[curnum-1];
-			begin_round=best_put_time;
-			printf("these seeds have no influence\n");
-		}*/
 		if (have_influence = true)
 			last_effect = seed_effect[bestseed_thisround];
 		else {
-			best_put_time = put_time[curnum - 1];
+			best_put_time = putTimeOfSeed[nthSeed - 1];
 			begin_round = best_put_time;
 		}
-		best_put_order[curnum] = seed[bestseed_thisround];
+		best_put_order[nthSeed] = seed[bestseed_thisround];
 		be_put[bestseed_thisround] = 1;
-		put_time[curnum] = best_put_time;
-		printf("----------%d round seed is %d, put time is %d\n", curnum, best_put_order[curnum], put_time[curnum]);
-		curnum++;
-	}//while(curnum < seednum)
-	for (int i = 0; i < seednum; i++)
+		putTimeOfSeed[nthSeed] = best_put_time;
+		printf("----------%d round seed is %d, put time is %d\n", nthSeed, best_put_order[nthSeed], putTimeOfSeed[nthSeed]);
+		nthSeed++;
+	}//while(nthSeed < seednum)
+	for (int i = 0; i < numOfSeed; i++)
 		seed[i] = best_put_order[i];
 }
 
-void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum) {
+void run_puttime(int seed[], int put_time[], double influenced_num_round[],
+	int seedBeEffectedBeforePut[], int seednum, int startnum) {
 	double best_influenced_num_round[seedsNumber * 20];
 	for (int i = startnum; i < seednum; i++) {
 		if (i == 0) {
 			put_time[0] = 0;
-			printf("choose first seed: %d", seed[0]);
-			run_result(seed, put_time, influenced_num_round, seed_be_effected, i + 1);
+			printf("choose first seed: %d\n", seed[0]);
+			run_result(seed, put_time, influenced_num_round, seedBeEffectedBeforePut, i + 1);
 			continue;
 		}
 		int max_num_round = 0, best_put_time = put_time[i - 1], max_thres = 0;
@@ -302,14 +283,16 @@ void run_puttime(int seed[], int put_time[], double influenced_num_round[], int 
 		printf("i=%d\n", i);
 		for (int j = put_time[i - 1]; j < put_time[i - 1] + 15; j++) {
 			put_time[i] = j;
-			run_result(seed, put_time, influenced_num_round, seed_be_effected, i + 1);
+			run_result(seed, put_time, influenced_num_round, seedBeEffectedBeforePut, i + 1);
 			tmp_num_round = 0;
 			bool upto_thres = false;
 			for (int k = 0; influenced_num_round[k] > 0.0; k++) { //caulate the average of each round
 				if (influenced_num_round[k] > basicInfluenceNumber) upto_thres = true;
 				if (upto_thres) {
 					//printf("tmp_num_round %d\n", tmp_num_round);
-					if (influenced_num_round[k] > basicInfluenceNumber + errOfBasicInfluenceNumber) tmp_num_round++;
+					if (influenced_num_round[k] >
+						basicInfluenceNumber + errOfBasicInfluenceNumberOfBasicInfluenceNumber)
+						tmp_num_round++;
 					else break;
 				}
 			}
@@ -340,13 +323,6 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 			user[i].isActived = 0;
 			user[i].round_time = -1;
 		}
-		////////////////////////////
-		/*for(int i=0;i<seednum;i++){	//put all initial node to queue
-			user[seed[i]].active=1;
-			user[seed[i]].round_time=0;
-			infl.push(seed[i]);
-		}*/
-		/////////////////////////////
 		next_seed = 0;
 		memset(put_activenode, 0, sizeof (put_activenode));
 		int tmp, tmp_round = 0; //tmp_round record round_time of queue.front
@@ -392,12 +368,12 @@ void run_result(int seed[], int put_time[], double influenced_num_round[], int s
 	}
 }
 
-void readFileAndBuildFrendRelation(FILE &edgeFile){
+void readFileAndBuildFrendRelation(FILE *edgeFile) {
 	maxId = 0;
 	int lPerson, rPerson;
 	double closeness;
 	Friend inputfriend;
-	while (fscanf(edgeFile, "%d %d %lf", &lPerson, &rPerson, &closeness) != EOF) { //read the adge
+	while (fscanf(edgeFile, "%d %d %lf", &lPerson, &rPerson, &closeness) != EOF) {
 		user[lPerson].id = lPerson;
 		inputfriend.id = rPerson;
 		inputfriend.closeness = closeness;
@@ -406,7 +382,9 @@ void readFileAndBuildFrendRelation(FILE &edgeFile){
 		maxId = max(maxId, lPerson);
 		exist[lPerson]++;
 	}
+	printf("read file done\n");
 }
+
 double take_random() {
 	double result = (double) rand() / (RAND_MAX + 1.0);
 	return result;
@@ -419,25 +397,29 @@ bool is_all_init_put(int seed[], int seednum) {
 	return true;
 }
 
-void random_choice_seed(int seed[]) {
+void choiceSeedByRandom(int seed[]) {
 	double sum, tmp_influence[seedsNumber * 20];
 	int tmp_seed[5], tmp_puttime[5], tmp_effect[5];
 	for (int i = 0, j; i < seedsNumber; i++) { //choose seed
-		while (1) {
+		int findTimes = 100;
+		while (findTimes--) {
 			j = rand() % maxId;
 			if (user[j].isActived == 1 || exist[j] == 0) continue;
 			tmp_seed[0] = j;
+			tmp_puttime[0] = 0;
 			run_result(tmp_seed, tmp_puttime, tmp_influence, tmp_effect, 1);
 			sum = 0;
 			for (int k = 0; tmp_influence[k] > 0.0 && k < seedsNumber * 20; k++) {
-				//printf("%lf\n", tmp_influence[k]);
 				sum += tmp_influence[k];
 			}
-			//printf("sum:%lf\n", sum);
 			if (sum > basicAbilityOfrSeed)
 				break;
 		}
-		printf("seed: %d id: %d effected num: %lf\n", i, j, sum);
+		if (findTimes == 0) {
+			printf("no proper seed\n");
+		} else {
+			printf("seed: %d id: %d effected num: %lf\n", i, j, sum);
+		}
 		//if this user is selected or this user is not existed
 		//choose new user again
 		seed[i] = j;
