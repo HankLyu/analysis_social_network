@@ -11,7 +11,7 @@ using namespace std;
 const int peopleSize = 200000;
 const int seedsNumber = 5;
 const int simulateTimes = 1000;
-const int basicAbilityOfrSeed = 100;
+const int basicAbilityOfrSeed = 300;
 const int basicInfluenceNumber = 60;
 const int maxRound = 100;
 const int errOfBasicInfluenceNumberOfBasicInfluenceNumber = 3;
@@ -29,74 +29,6 @@ struct social {
 	vector<Friend> friends;
 };
 
-class SocialMan {
-public:
-
-	SocialMan(int Id) {
-		id = Id;
-		exist = 0;
-		activeStatus = 0;
-		beActivedTime = -1;
-		influenceAllHisFriendAbility = 0;
-		hisFriends.clear();
-	}
-
-	bool beActivedAt(int roundTime) {
-		activeStatus = 1;
-		beActivedTime = roundTime;
-		return true;
-	}
-
-	bool isActived()const {
-		if (activeStatus == 1)
-			return true;
-		else
-			return false;
-	}
-
-	bool isExist()const {
-		return exist;
-	}
-
-	bool makeFriends(int idName, double theirCloseness) {
-		exist = true;
-		Friends newFriend;
-		newFriend.id = idName;
-		newFriend.closeness = theirCloseness;
-		hisFriends.push_back(newFriend);
-		return true;
-	}
-
-	bool cleanStatus() {
-		activeStatus = 0;
-		beActivedTime = -1;
-	}
-
-	const vector<int> friendsIsInfluenceByMe() {
-		vector<int> resultFriends;
-		int friendLength = hisFriends.size();
-		double interactiveThisTime;
-		for (int i = 0; i < friendLength; i++) {
-			interactiveThisTime = (double) rand() / (RAND_MAX + 1.0);
-			if (interactiveThisTime < hisFriends[i].closeness)
-				resultFriends.push_back(hisFriends[i].id);
-		}
-		return resultFriends;
-	}
-private:
-	int id;
-	bool exist;
-	bool activeStatus;
-	int beActivedTime;
-	double influenceAllHisFriendAbility;
-
-	struct Friends {
-		int id;
-		double closeness;
-	};
-	vector<Friends> hisFriends;
-};
-
 social user[peopleSize];
 int exist[peopleSize];
 int maxId; //maxId to record the max id
@@ -107,7 +39,8 @@ void choiceSeedByRandom(int seed[]);
 void choice_seed(int by_choice[], int num, int seed[]);
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
 void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum);
-void greedy(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
+void greedy(int seed[], int putTimeOfSeed[], int numOfSeed,
+	int seedBeEffectedBeforePutTimes[], double numberOfNodeBeEffectedForEachRound[]);
 void readFileAndBuildFrendRelation(FILE *edgeFile);
 
 int main(int argc, char* argv[]) {
@@ -128,11 +61,11 @@ int main(int argc, char* argv[]) {
 	srand(time(NULL));
 
 	choiceSeedByRandom(seed);
-	int seed_be_effected[seedsNumber] = {0}; //count it is active node but it have been effected times
+	
+	int seed_be_effected[seedsNumber] = {0};
 	int put_time[seedsNumber] = {0}; //the round should be put
-
 	start_time = time(NULL);
-	greedy(seed, put_time, influenced_num_round, seed_be_effected, seedsNumber);
+	greedy(seed, put_time, seedsNumber, seed_be_effected, influenced_num_round);
 	memset(seed_be_effected, 0, sizeof (seed_be_effected));
 	run_result(seed, put_time, influenced_num_round, seed_be_effected, seedsNumber);
 	finish_time = time(NULL);
@@ -179,93 +112,93 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-void greedy(int seed[], int putTimeOfSeed[], double influenced_num_round[],
-	int seedBeEffectedBeforePut[], int numOfSeed) {
-	int nthSeed = 0, be_put[seedsNumber] = {0};
-	int last_effect = 0, seed_effect[seedsNumber] = {0};
-	double best_influenced_num_round[seedsNumber * 20];
-	//last_effect is to record how many rounds are over thres
-	//seed_effect is to record how many rounds are over thres to check whether this seed have enough influence
-	int best_put_order[seedsNumber], begin_round = 0, tmp_begin_round;
-	//begin_round is to record the round of peak.
-	int best_put_time; //record the time of the current seed
-	for (int i = 0; i < nthSeed; i++) { //if the order of the part seeds is sure, change the "nthSeed" valure 
-		be_put[i] = 1;
-		best_put_order[i] = seed[i];
-	}
+void greedy(int seed[], int putTimeOfSeed[], int numOfSeed,
+	int seedBeEffectedBeforePutTimes[], double numberOfNodeBeEffectedForEachRound[]) {
+	int nthSeed = 0;
+	bool thisSeedHasBeenPut[seedsNumber] = {false};
+	int numberOfCurrentEffectiveRound = 0, thisSeedHasEffectiveRound[seedsNumber] = {0};
+	double bestInfluenceResultForEachRound[seedsNumber * 20];
+	int bestPutOrderForSeeds[seedsNumber], peakRound = 0, tmpPeakRound;
+	int bestPutTimeOfNextSeed;
+	
 	while (nthSeed < numOfSeed) {
-		bool have_influence = false;
-		int min_overthres = 1e5; //to find the  best seed having the min peak for this order to make sure the wave is not too high
-		int peak; //to find the peak of each seed
-		int bestseed_thisround = -1; //to record which seed is best in this round
+		bool isThisSeedHasInfluence = false;
+		int bestPeak = 1e5; //to find the  best seed having the min peak for this order to make sure the wave is not too high
+		int peakOfThisSeed;
+		int bestCurrentSeed = -1;
 
-		memset(seed_effect, 0, sizeof (seed_effect));
-		for (int i = 0; i < numOfSeed; i++) { //to 
-			peak = 0;
-			if (be_put[i] == 1) continue;
+		memset(thisSeedHasEffectiveRound, 0, sizeof (thisSeedHasEffectiveRound));
+		for (int i = 0; i < numOfSeed; i++) {
+			if (thisSeedHasBeenPut[i] == true) continue;
 
-			best_put_order[nthSeed] = seed[i];
-			run_puttime(best_put_order, putTimeOfSeed, influenced_num_round, seedBeEffectedBeforePut, nthSeed + 1, nthSeed);
-			tmp_begin_round = begin_round;
+			bestPutOrderForSeeds[nthSeed] = seed[i];
+			run_puttime(bestPutOrderForSeeds, putTimeOfSeed, numberOfNodeBeEffectedForEachRound, seedBeEffectedBeforePutTimes, nthSeed + 1, nthSeed);
+			tmpPeakRound = peakRound;
 			//chose the peak
-			for (int j = tmp_begin_round; j < tmp_begin_round + 35; j++) { //check the influencu wave
-				peak = max(peak, (int) influenced_num_round[j]);
+			for (int j = tmpPeakRound; j < tmpPeakRound + 35; j++) {
+				peakOfThisSeed = max(peakOfThisSeed, (int) numberOfNodeBeEffectedForEachRound[j]);
 			}
-			bool upto_thres = false;
-			for (int k = 0; influenced_num_round[k] > 0.0; k++) { //caulate the average of each round
-				if (influenced_num_round[k] > basicInfluenceNumber) upto_thres = true;
-				if (upto_thres) {
-					if (influenced_num_round[k] > basicInfluenceNumber) seed_effect[i]++;
+			
+			//caulate the average of each round in continus
+			bool startToCountEffectiveRound = false;
+			for (int k = 0; numberOfNodeBeEffectedForEachRound[k] > 0.0; k++) { 
+				if (numberOfNodeBeEffectedForEachRound[k] > basicInfluenceNumber) 
+					startToCountEffectiveRound = true;
+				if (startToCountEffectiveRound) {
+					if (numberOfNodeBeEffectedForEachRound[k] > basicInfluenceNumber) 
+						thisSeedHasEffectiveRound[i]++;
 					else break;
 				}
 				//printf("%d: %.1lf\n", i, influenced_num_round[k]);
 			}
 			//printf("seed %d max over %d\n", seed[i], peak);
-			if (peak < min_overthres && peak > basicInfluenceNumber
-				&& seed_effect[i] > last_effect + 1) { //check whether the current seed is good
-				min_overthres = peak; //to sure the new seed just over the threshold a bit
-				bestseed_thisround = i;
-				best_put_time = putTimeOfSeed[nthSeed];
-				have_influence = true;
-				memcpy(best_influenced_num_round, influenced_num_round, sizeof (best_influenced_num_round));
+			if (peakOfThisSeed < bestPeak && peakOfThisSeed > basicInfluenceNumber
+				&& thisSeedHasEffectiveRound[i] > numberOfCurrentEffectiveRound + 1) { //check whether the current seed is good
+				bestPeak = peakOfThisSeed; //to sure the new seed just over the threshold a bit
+				bestCurrentSeed = i;
+				bestPutTimeOfNextSeed = putTimeOfSeed[nthSeed];
+				isThisSeedHasInfluence = true;
+				memcpy(bestInfluenceResultForEachRound,
+					numberOfNodeBeEffectedForEachRound,
+					sizeof (bestInfluenceResultForEachRound));
 			}
 			printf("the current best seed is: %d  peak: %d last_effect: %d, this seed effected %d\n"
-				, seed[bestseed_thisround], peak, last_effect, seed_effect[i]);
+				, seed[bestCurrentSeed], bestPeak, numberOfCurrentEffectiveRound, thisSeedHasEffectiveRound[i]);
 		}//for(int i=0; i<seednum; i++)
-		if (bestseed_thisround == -1) {
+		if (bestCurrentSeed == -1) {
 			printf("no proper seed!!!!!\n");
 			for (int i = 0; i < seedsNumber; i++)
-				if (be_put[i] == 0) {
-					be_put[i] = 1;
-					bestseed_thisround = i;
-					best_put_time = putTimeOfSeed[nthSeed - 1];
+				if (thisSeedHasBeenPut[i] == false) {
+					thisSeedHasBeenPut[i] = true;
+					bestCurrentSeed = i;
+					bestPutTimeOfNextSeed = putTimeOfSeed[nthSeed - 1];
 					break;
 				}
-			have_influence = false;
+			isThisSeedHasInfluence = false;
 		}
 		double new_peak = 0;
-		for (int j = tmp_begin_round; j < tmp_begin_round + 35; j++) {
+		for (int j = tmpPeakRound; j < tmpPeakRound + 35; j++) {
 			//printf("%lf\n",influenced_num_round[j]);
-			if (new_peak < best_influenced_num_round[j]) {
-				new_peak = best_influenced_num_round[j];
-				begin_round = j;
+			if (new_peak < bestInfluenceResultForEachRound[j]) {
+				new_peak = bestInfluenceResultForEachRound[j];
+				peakRound = j;
 			}
 		}
-		printf("begin_round is %d\n peak is : %.3lf", begin_round, new_peak);
-		if (have_influence = true)
-			last_effect = seed_effect[bestseed_thisround];
+		printf("begin_round is %d\n peak is : %.3lf", peakRound, new_peak);
+		if (isThisSeedHasInfluence = true)
+			numberOfCurrentEffectiveRound = thisSeedHasEffectiveRound[bestCurrentSeed];
 		else {
-			best_put_time = putTimeOfSeed[nthSeed - 1];
-			begin_round = best_put_time;
+			bestPutTimeOfNextSeed = putTimeOfSeed[nthSeed - 1];
+			peakRound = bestPutTimeOfNextSeed;
 		}
-		best_put_order[nthSeed] = seed[bestseed_thisround];
-		be_put[bestseed_thisround] = 1;
-		putTimeOfSeed[nthSeed] = best_put_time;
-		printf("----------%d round seed is %d, put time is %d\n", nthSeed, best_put_order[nthSeed], putTimeOfSeed[nthSeed]);
+		bestPutOrderForSeeds[nthSeed] = seed[bestCurrentSeed];
+		thisSeedHasBeenPut[bestCurrentSeed] = true;
+		putTimeOfSeed[nthSeed] = bestPutTimeOfNextSeed;
+		printf("----------%d round seed is %d, put time is %d\n", nthSeed, bestPutOrderForSeeds[nthSeed], putTimeOfSeed[nthSeed]);
 		nthSeed++;
 	}//while(nthSeed < seednum)
 	for (int i = 0; i < numOfSeed; i++)
-		seed[i] = best_put_order[i];
+		seed[i] = bestPutOrderForSeeds[i];
 }
 
 void run_puttime(int seed[], int put_time[], double influenced_num_round[],
