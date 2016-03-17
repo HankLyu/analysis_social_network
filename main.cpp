@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
 	srand(time(NULL));
 	choiceSeedByRandom(seed);
 
-
+	
 	startTime = time(NULL);
 	greedy(seed, putTimeOfSeed, seedsNumber, timesOfSeedBeEffectedBeforePut, numberOfNodeBeEffectedForEachRound);
 	endTime = time(NULL);
