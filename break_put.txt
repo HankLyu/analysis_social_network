@@ -1,0 +1,24 @@
+The break run time is 35
+break:
+The initial node and its num of friends
+35839	   1	0.010
+42945	   1	0.010
+36248	   1	0.010
+19703	   3	0.030
+20277	   2	0.020
+the order of seeds
+35839, 42945, 36248, 19703, 20277, 
+put round
+  0,   0,   0,   0,   0, 
+ 100 up:	  0
+  50 up:	  0
+the average num: 
+5.118
+average round
+5.000
+0.068
+0.025
+0.012
+0.007
+0.005
+0.001
