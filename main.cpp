@@ -74,7 +74,8 @@ int main(int argc, char* argv[]) {
 }
 
 void run_result(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum);
-void run_puttime(int seed[], int put_time[], double influenced_num_round[], int seed_be_effected[], int seednum, int startnum);
+void findPutTimeForFixOrderSeeds(int seed[], int put_time[], double influenced_num_round[],
+	int seed_be_effected[], int seednum, int startnum);
 int countEffectiveRound(double numberOfNodeBeEffectedForEachRound[]);
 
 void greedy(int seed[], int putTimeOfSeed[], int seedsNumber,
@@ -99,7 +100,7 @@ void greedy(int seed[], int putTimeOfSeed[], int seedsNumber,
 			if (isThisSeedHasBeenPut[testSeed] == true) continue;
 			
 			bestPutOrderForSeeds[nthSeed] = seed[testSeed];
-			run_puttime(bestPutOrderForSeeds, putTimeOfSeed, numberOfNodeBeEffectedForEachRound, timesOfSeedBeEffectedBeforePut, nthSeed+1, nthSeed);
+			findPutTimeForFixOrderSeeds(bestPutOrderForSeeds, putTimeOfSeed, numberOfNodeBeEffectedForEachRound, timesOfSeedBeEffectedBeforePut, nthSeed+1, nthSeed);
 			tmpPeakRound = peakRound;
 			// Find the peak
 			peakOfTestSeed = 0;
@@ -166,7 +167,7 @@ void greedy(int seed[], int putTimeOfSeed[], int seedsNumber,
 	run_result(seed, putTimeOfSeed, numberOfNodeBeEffectedForEachRound, timesOfSeedBeEffectedBeforePut, seedsNumber);
 }
 
-void run_puttime(int seed[], int put_time[], double influenced_num_round[],
+void findPutTimeForFixOrderSeeds(int seed[], int put_time[], double influenced_num_round[],
 	int seedBeEffectedBeforePut[], int seednum, int startnum) {
 	double best_influenced_num_round[seedsNumber * 20];
 	for (int i = startnum; i < seednum; i++) {
