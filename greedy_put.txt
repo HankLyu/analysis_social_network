@@ -1,68 +1,72 @@
-The greedy run time is 251
+The greedy run time is 269
 Greedy:
 seeds
-15782	   2	0.158
-25297	  13	1.884
-21854	  18	1.497
-1330	   3	0.667
-6364	   4	0.367
+11418	   3	0.767
+7891	   4	0.671
+24365	   1	0.881
+ 298	  92	10.306
+7336	  12	1.268
 Putting time of each seed
-  0,   5,  13,  20,  21, 
- 100 up:	 24
+  0,  10,  16,  24,  24, 
+ 100 up:	 25
 the total number of effected nodes is: 
-4492.747
+5109.090
 the number of effected nodes of each round
 round 1:	1.000
-round 2:	0.135
-round 3:	0.519
-round 4:	0.625
-round 5:	2.361
-round 6:	7.565
-round 7:	20.797
-round 8:	39.016
-round 9:	67.003
-round 10:	89.732
-round 11:	103.185
-round 12:	116.982
-round 13:	147.911
-round 14:	193.940
-round 15:	230.012
-round 16:	238.759
-round 17:	209.321
-round 18:	166.382
-round 19:	138.692
-round 20:	129.515
-round 21:	132.061
-round 22:	138.971
-round 23:	154.738
-round 24:	168.606
-round 25:	166.551
-round 26:	155.440
-round 27:	156.134
-round 28:	184.288
-round 29:	225.036
-round 30:	249.670
-round 31:	235.729
-round 32:	194.767
-round 33:	145.895
-round 34:	101.867
-round 35:	68.767
-round 36:	43.172
-round 37:	26.405
-round 38:	16.401
-round 39:	9.929
-round 40:	5.944
-round 41:	3.612
-round 42:	2.168
-round 43:	1.301
-round 44:	0.764
-round 45:	0.404
-round 46:	0.278
-round 47:	0.149
-round 48:	0.117
-round 49:	0.070
-round 50:	0.025
-round 51:	0.019
-round 52:	0.011
-round 53:	0.005
-round 54:	0.001
+round 2:	0.749
+round 3:	0.578
+round 4:	0.370
+round 5:	2.018
+round 6:	5.739
+round 7:	13.578
+round 8:	38.479
+round 9:	81.370
+round 10:	126.959
+round 11:	149.842
+round 12:	136.573
+round 13:	115.484
+round 14:	104.904
+round 15:	138.331
+round 16:	214.336
+round 17:	291.263
+round 18:	317.462
+round 19:	276.601
+round 20:	215.915
+round 21:	164.671
+round 22:	131.790
+round 23:	139.781
+round 24:	209.040
+round 25:	286.776
+round 26:	315.039
+round 27:	277.565
+round 28:	221.544
+round 29:	177.034
+round 30:	169.574
+round 31:	175.285
+round 32:	167.988
+round 33:	142.902
+round 34:	107.379
+round 35:	73.395
+round 36:	46.667
+round 37:	28.107
+round 38:	16.979
+round 39:	9.934
+round 40:	6.217
+round 41:	3.768
+round 42:	2.334
+round 43:	1.429
+round 44:	0.879
+round 45:	0.522
+round 46:	0.332
+round 47:	0.206
+round 48:	0.119
+round 49:	0.115
+round 50:	0.065
+round 51:	0.032
+round 52:	0.033
+round 53:	0.018
+round 54:	0.010
+round 55:	0.003
+round 56:	0.004
+round 57:	0.002
+round 58:	0.001
